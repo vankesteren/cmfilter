@@ -1,0 +1,17 @@
+Package: cmfilter
+Type: Package
+Title: Coordinate-wise Mediation Filter
+Version: 0.1.0
+Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
+Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
+Description: This package implements simultaneous discovery of multiple 
+  mediators in an x -> M -> y system using arbitrary decision functions through 
+  Coordinate-wise Mediation Filtering.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: MASS,
+    pbapply,
+    parallel,
+    crayon
+RoxygenNote: 6.0.1

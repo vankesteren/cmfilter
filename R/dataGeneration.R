@@ -1,0 +1,112 @@
+#' Generate a high-dimensional mediation dataset
+#'
+#' This function generates a dataset from an x -> M -> y model, where M may
+#' be of any size with any correlation matrix.
+#'
+#' @param n Sample size
+#' @param a Vector of a path coefficients within 0 and 1
+#' @param b Vector of b path coefficients within 0 and 1
+#' @param r2y Proportion of explained variance in y. Set to
+#' \code{b \%*\% Sigma \%*\% b} for \code{var(y) == 1}.
+#' @param dir Direct path from x to y
+#' @param Sigma Desired true covariance matrix between the mediators M
+#' @param residual Whether Sigma indicates residual or marginal covariance
+#' @param scaley Whether to standardise y (changes b path coefficients)
+#' @param forma Functional form of the a paths. Function that accepts a matrix
+#' as input and transforms each column to the desired form.
+#' @param formb Functional form of the b paths. Function that accepts a vector.
+#'
+#' @return A data frame with columns x, M.1 - M.p, y
+#'
+#' @examples
+#' # Generate a suppression dataset where M.2 is suppressed
+#' sup <- generateMed(n = 100,
+#'                    a = c(-0.4, 0.4),
+#'                    b = c(0.8, 0.48),
+#'                    Sigma = matrix(c(1, -0.6, -0.6, 1), 2))
+#'
+#' @importFrom stats rnorm
+#'
+#' @export
+generateMed <- function(n = 1e2L,
+                        a = 0.3, b = 0.3,
+                        r2y = 0.5, dir = 0,
+                        Sigma, residual = FALSE,
+                        scaley = FALSE,
+                        forma = identity, formb = identity) {
+
+  # Input checking
+  if (r2y > 1 || r2y <= 0) {
+    stop("Arg r2y should be in range (0,1]")
+  }
+  if (length(a) != length(b)) {
+    stop("There should be as many a paths as b paths!")
+  }
+  if (!missing(Sigma)) {
+    if (!requireNamespace("MASS", quietly = TRUE)) {
+      stop("Package MASS is needed for this function to work with the Sigma",
+           " argument. Please install it.",
+           call. = FALSE)
+    }
+    if (!is.matrix(Sigma) || ncol(Sigma) != nrow(Sigma) ||
+        !isSymmetric(Sigma)) {
+      stop("Sigma needs to be a square symmetric covariance matrix.")
+    }
+    if (ncol(Sigma) != length(a)) {
+      stop("Sigma should have as many cols & rows as a & b paths.")
+    }
+  }
+
+  if (missing(Sigma)) {
+    if (any(c(a > 1, a < -1))) {
+      stop("Elements in 'a' out of range, should all be between 0 and 1",
+           "if Sigma is not specified. (Assume variance of 1 for M)")
+    }
+
+    # No residual covariance, fast to generate
+    # Calculate residual variance of y
+    vary <- b %*% b + dir^2 # variance of y = sum(b^2) because M std & no cov
+    resy <- vary/r2y - vary # residual variance of y
+
+    # Simulate the residuals of M
+    resM <- sapply(1 - a^2, function(x) rnorm(n, sd = x))
+
+  } else {
+
+    # There is residual covariance
+
+    # Switch between residual and marginal covariance of M.
+    # This uses the Schur complement which simplifies to Sigma +/- tcrossprod(a)
+    # because C = B' and A = 1. See Abadir & Magnus p. 102.
+    if (residual) {
+      psi <- Sigma
+      Sigma <- psi + tcrossprod(a)
+    } else {
+      psi <- Sigma - tcrossprod(a)
+    }
+
+    # Marginal covariance matrix of x & M
+    sigmaXM <- diag(ncol(Sigma) + 1)
+    sigmaXM[-1,-1] <- Sigma
+    sigmaXM[1,-1] <- a
+    sigmaXM[-1,1] <- a
+
+    # Calculate residual variance of y
+    pathsToY <- c(dir, b)
+    vary <- t(pathsToY) %*% sigmaXM %*% pathsToY # propagation of error
+    resy <- vary/r2y - vary # residual variance of y
+
+    # Simulate the residuals of M
+    resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
+  }
+
+
+  # simulate the dataset
+  x <- rnorm(n)
+  M <- forma(x %*% t(a)) + resM
+  y <- formb(M %*% b) + formb(dir * x) + rnorm(n, sd = sqrt(resy))
+  if (scaley) y <- scale(y)
+
+  return(data.frame(x = x, M = M, y = y))
+}
+
