@@ -1,1 +1,1 @@
-# cmfilter
+Package `cmfilter` is work in progress.
