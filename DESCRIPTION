@@ -7,7 +7,7 @@ Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Description: This package implements simultaneous discovery of multiple 
   mediators in an x -> M -> y system using arbitrary decision functions through 
   Coordinate-wise Mediation Filtering.
-License: MIT + file LICENSE
+License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
 Suggests: MASS,
