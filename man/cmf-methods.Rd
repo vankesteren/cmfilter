@@ -14,6 +14,21 @@
 
 \method{print}{cmf}(x, ...)
 }
+\arguments{
+\item{x}{cmf object}
+
+\item{removeZeros}{whether to remove the unselected mediators from the plot}
+
+\item{line}{whether to show a line at the chosen cutoff}
+
+\item{las}{las argument to barplot}
+
+\item{ylim}{y limits argument to barplot}
+
+\item{...}{other arguments passed to barplot and summary}
+
+\item{object}{cmf object}
+}
 \description{
 Methods for cmf results lists
 }

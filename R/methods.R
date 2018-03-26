@@ -1,5 +1,13 @@
 #' Methods for cmf results lists
 #'
+#' @param x cmf object
+#' @param object cmf object
+#' @param removeZeros whether to remove the unselected mediators from the plot
+#' @param line whether to show a line at the chosen cutoff
+#' @param las las argument to barplot
+#' @param ylim y limits argument to barplot
+#' @param ... other arguments passed to barplot and summary
+#'
 #' @seealso \code{\link{cmf}}
 #'
 #' @importFrom graphics barplot abline
@@ -74,5 +82,5 @@ summary.cmf <- function(object, ...) {
 #'
 #' @export
 print.cmf <- function(x, ...) {
-  summary(x)
+  summary(x, ...)
 }
