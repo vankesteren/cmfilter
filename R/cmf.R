@@ -204,11 +204,11 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
 
     if (length(Mx) > 1) {
       # calculate residuals wrt this model matrix
-      dotprod <- t(Mx) %*% Mx
+      cp <- crossprod(Mx)
       # residual of X
-      xres <- x - Mx %*% solve(dotprod, t(Mx) %*% x)
+      xres <- x - Mx %*% solve(cp, crossprod(Mx, x))
       # residual of Y
-      yres <- y - Mx %*% solve(dotprod, t(Mx) %*% y)
+      yres <- y - Mx %*% solve(cp, crossprod(Mx, y))
     } else {
       # no mediators selected
       xres <- x
