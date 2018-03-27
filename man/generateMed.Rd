@@ -5,7 +5,8 @@
 \title{Generate a high-dimensional mediation dataset}
 \usage{
 generateMed(n = 100L, a = 0.3, b = 0.3, r2y = 0.5, dir = 0, Sigma,
-  residual = FALSE, scaley = FALSE, forma = identity, formb = identity)
+  residual = FALSE, empirical = FALSE, scaley = FALSE, forma = identity,
+  formb = identity)
 }
 \arguments{
 \item{n}{Sample size}
@@ -22,6 +23,9 @@ generateMed(n = 100L, a = 0.3, b = 0.3, r2y = 0.5, dir = 0, Sigma,
 \item{Sigma}{Desired true covariance matrix between the mediators M}
 
 \item{residual}{Whether Sigma indicates residual or marginal covariance}
+
+\item{empirical}{Ensure observed data matrix has exactly the requested covmat
+(only if Sigma is specified)}
 
 \item{scaley}{Whether to standardise y (changes b path coefficients)}
 

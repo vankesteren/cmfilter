@@ -99,17 +99,33 @@ generateMed <- function(n = 1e2L,
     resy <- vary/r2y - vary # residual variance of y
 
     # Simulate the residuals of M
-    resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
+    if (!empirical) resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
   }
 
 
   # simulate the dataset
-  x <- rnorm(n)
-  M <- forma(x %*% t(a)) + resM
-  y <- formb(M %*% b) + formb(dir * x) + rnorm(n, sd = sqrt(resy))
-  if (scaley) y <- scale(y)
+  if (!empirical) {
+    x <- rnorm(n)
+    M <- forma(x %*% t(a)) + resM
+    y <- formb(M %*% b) + formb(dir * x) + rnorm(n, sd = sqrt(resy))
+    if (scaley) y <- scale(y)
+    return(data.frame(x = x, M = M, y = y))
+  } else {
+    if (missing(Sigma)) stop("Empirical not allowed without Sigma")
+    # calculate full sigma
+    nvars <- length(a) + 2
+    fullSigma <- diag(nvars)
+    fullSigma[-nvars, -nvars] <- sigmaXM
+    fullSigma[nvars,-nvars] <- fullSigma[-nvars, nvars] <- pathsToY %*% sigmaXM
+    fullSigma[nvars, nvars] <- vary + resy
 
-  return(data.frame(x = x, M = M, y = y))
+    # now it's simple to generate
+    dmat <- matrix(rnorm(n*nvars), n)
+
+    d <- as.data.frame(empiricalTransform(dmat, fullSigma))
+    colnames(d) <- c("x", paste0("M.", 1:length(a)), "y")
+    return(d)
+  }
 }
 
 #' @keywords internal
