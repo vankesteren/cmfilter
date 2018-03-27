@@ -131,7 +131,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
 
       # Check for convergence at lags
       mselLags <- cbind(mselLags[,-1], msel)
-      converged <- rowSums(lags) %% stableLag + 1 == 0 # Thanks Oisin!
+      converged <- rowSums(lags) %% (stableLag + 1) == 0 # Thanks Oisin!
       if (converged) {
         if (verbose) cat("\nAlgorithm converged",
                          "\n\n-----------\n\n")
