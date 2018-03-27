@@ -18,6 +18,8 @@ and as output a TRUE (include) or FALSE (exclude) statement}
 
 \item{msel}{binary vector of mediator selections at step i}
 
+\item{medsamp}{which variables to consider}
+
 \item{...}{parameters passed to decisionFunction}
 }
 \value{

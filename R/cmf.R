@@ -26,6 +26,8 @@
 #' will be selected; whichever is lowest.
 #' @param randomOrder whether the order of the mediators is randomised before
 #' the start of each iteration
+#' @param subSampling whether to consider only a part of the variables at each
+#' iteration, similar to how random forest decorrelates its trees.
 #' @param cutoff a cutoff value for selection: variables are selected if they
 #' display a selection rate higher than this value. Only relevant when multiple
 #' starts are specified.
@@ -51,6 +53,7 @@
 cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
                 maxIter = 10, stableLag = 1,
                 nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
+                subSampling = FALSE,
                 cutoff = 0.5, parallel = FALSE, nCores = 2,
                 verbose = FALSE, progressBar = FALSE, ...) {
 
@@ -97,14 +100,22 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
       msel[1:len] <- generateStart(len, min(floor(nrow(M)/2), floor(len/2)))
     }
 
+    if (subSampling) {
+      # select a random number of variables to consider
+      # see James, Witten, Hastie & Tibshirani ISLR (p. 319)
+      sub <- ceiling(sqrt(len))
+    } else {
+      sub <- len
+    }
+
     if (verbose) {
       cat("\nCMF Algorithm\n\n-----------\n\n")
       catmsel(msel, w)
     }
 
     for (i in 1:maxIter) {
-      if (randomOrder) {
-        medsamp <- sample(medsamp)
+      if (randomOrder || subSampling) {
+        medsamp <- sample(1:len, sub)
       }
       msel <- cmfStep(x, M, y, decisionFunction, msel, medsamp, ...)
       mselSum <- mselSum + msel
@@ -176,6 +187,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
 #' @param decisionFunction a function with as inputs x, m, y, parameters,
 #' and as output a TRUE (include) or FALSE (exclude) statement
 #' @param msel binary vector of mediator selections at step i
+#' @param medsamp which variables to consider
 #' @param ... parameters passed to decisionFunction
 #'
 #' @return binary vector of mediator selections at step i+1

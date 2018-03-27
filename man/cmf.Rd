@@ -6,8 +6,8 @@
 \usage{
 cmf(x, M, y, decisionFunction = "corMinusPartCor", maxIter = 10,
   stableLag = 1, nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
-  cutoff = 0.5, parallel = FALSE, nCores = 2, verbose = FALSE,
-  progressBar = FALSE, ...)
+  subSampling = FALSE, cutoff = 0.5, parallel = FALSE, nCores = 2,
+  verbose = FALSE, progressBar = FALSE, ...)
 }
 \arguments{
 \item{x}{exogenous variable; numeric vector}
@@ -35,6 +35,9 @@ will be selected; whichever is lowest.}
 
 \item{randomOrder}{whether the order of the mediators is randomised before
 the start of each iteration}
+
+\item{subSampling}{whether to consider only a part of the variables at each
+iteration, similar to how random forest decorrelates its trees.}
 
 \item{cutoff}{a cutoff value for selection: variables are selected if they
 display a selection rate higher than this value. Only relevant when multiple
