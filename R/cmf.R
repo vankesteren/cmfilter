@@ -223,7 +223,6 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
     # create model matrix of included mediators
     mmsel <- msel == 1
     mmsel[med] <- FALSE
-    mmsel[!medsamp] <- FALSE
     Mx <- M[, mmsel]
 
     if (length(Mx) > 1) {
