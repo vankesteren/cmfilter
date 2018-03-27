@@ -27,10 +27,12 @@
 #' @param randomOrder whether the order of the mediators is randomised before
 #' the start of each iteration
 #' @param subSampling whether to consider only a part of the variables at each
-#' iteration, similar to how random forest decorrelates its trees.
+#' iteration, similar to how random forest decorrelates its trees. If true,
+#' increase the stableLag parameter.
 #' @param cutoff a cutoff value for selection: variables are selected if they
 #' display a selection rate higher than this value. Only relevant when multiple
-#' starts are specified.
+#' starts are specified. Can also be specified post-hoc using
+#' \code{\link{setCutoff}}
 #'
 #' @param parallel whether to run the multiple starts in parallel
 #' @param nCores how many threads (cores) to use for parallel processing
@@ -42,11 +44,16 @@
 #'
 #' @param ... parameters passed to decisionFunction
 #'
-#' @details Available decision functions:
-#'  - corMinusPartCor p.value
-#'  - prodCoef
+#' @details Available decision functions (arguments = defaultvalue):
+#'
+#'  - \code{corMinusPartCor} (\code{p.value} = 0.05): Test for xy correlation minus the
+#'  partial xy.m correlation
+#'
+#'  - \code{prodCoef} (\code{p.value} = 0.05): Test for the product of coefficients, Sobel
+#'  test
 #'
 #' @return a list of class *cmf*. See \code{\link{cmf-methods}}
+#'
 #'
 #' @export
 
@@ -133,9 +140,13 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
     }
 
     if (i == maxIter && !converged) {
+      # algorithm did not converge
       if (nStarts == 1) warning("Maximum iteration reached, nonconvergence")
       if (verbose) cat("\nAlgorithm did not converge",
                        "\n\n-----------\n\n")
+    } else {
+      # algorithm converged, consider only last selection for selection rate
+      mselSum <- msel*i
     }
 
     return(list(
@@ -212,6 +223,7 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
     # create model matrix of included mediators
     mmsel <- msel == 1
     mmsel[med] <- FALSE
+    mmsel[!medsamp] <- FALSE
     Mx <- M[, mmsel]
 
     if (length(Mx) > 1) {

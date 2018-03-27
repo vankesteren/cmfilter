@@ -6,6 +6,7 @@
 #' @param line whether to show a line at the chosen cutoff
 #' @param las las argument to barplot
 #' @param ylim y limits argument to barplot
+#' @param cutoff new cutoff for mediator selections
 #' @param ... other arguments passed to barplot and summary
 #'
 #' @seealso \code{\link{cmf}}
@@ -83,4 +84,15 @@ summary.cmf <- function(object, ...) {
 #' @export
 print.cmf <- function(x, ...) {
   summary(x, ...)
+}
+
+#' @rdname cmf-methods
+#'
+#' @export
+setCutoff <- function(object, cutoff) {
+  if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
+    stop("Input cutoff between 0 and 1")
+  object$call$cutoff <- cutoff
+  object$selection <- object$selectionRate > cutoff
+  object
 }

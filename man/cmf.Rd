@@ -37,11 +37,13 @@ will be selected; whichever is lowest.}
 the start of each iteration}
 
 \item{subSampling}{whether to consider only a part of the variables at each
-iteration, similar to how random forest decorrelates its trees.}
+iteration, similar to how random forest decorrelates its trees. If true,
+increase the stableLag parameter.}
 
 \item{cutoff}{a cutoff value for selection: variables are selected if they
 display a selection rate higher than this value. Only relevant when multiple
-starts are specified.}
+starts are specified. Can also be specified post-hoc using
+\code{\link{setCutoff}}}
 
 \item{parallel}{whether to run the multiple starts in parallel}
 
@@ -66,7 +68,11 @@ mediators in the model. By doing this cyclically, the algorithm converges to
 the best fitting subset of mediators.
 }
 \details{
-Available decision functions:
- - corMinusPartCor p.value
- - prodCoef
+Available decision functions (arguments = defaultvalue):
+
+ - \code{corMinusPartCor} (\code{p.value} = 0.05): Test for xy correlation minus the
+ partial xy.m correlation
+
+ - \code{prodCoef} (\code{p.value} = 0.05): Test for the product of coefficients, Sobel
+ test
 }

@@ -5,6 +5,7 @@
 \alias{plot.cmf}
 \alias{summary.cmf}
 \alias{print.cmf}
+\alias{setCutoff}
 \title{Methods for cmf results lists}
 \usage{
 \method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
@@ -13,6 +14,8 @@
 \method{summary}{cmf}(object, ...)
 
 \method{print}{cmf}(x, ...)
+
+setCutoff(object, cutoff)
 }
 \arguments{
 \item{x}{cmf object}
@@ -28,6 +31,8 @@
 \item{...}{other arguments passed to barplot and summary}
 
 \item{object}{cmf object}
+
+\item{cutoff}{new cutoff for mediator selections}
 }
 \description{
 Methods for cmf results lists
