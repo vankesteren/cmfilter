@@ -11,6 +11,8 @@
 #' @param dir Direct path from x to y
 #' @param Sigma Desired true covariance matrix between the mediators M
 #' @param residual Whether Sigma indicates residual or marginal covariance
+#' @param empirical Ensure observed data matrix has exactly the requested covmat
+#' (only if Sigma is specified)
 #' @param scaley Whether to standardise y (changes b path coefficients)
 #' @param forma Functional form of the a paths. Function that accepts a matrix
 #' as input and transforms each column to the desired form.
@@ -31,7 +33,7 @@
 generateMed <- function(n = 1e2L,
                         a = 0.3, b = 0.3,
                         r2y = 0.5, dir = 0,
-                        Sigma, residual = FALSE,
+                        Sigma, residual = FALSE, empirical = FALSE,
                         scaley = FALSE,
                         forma = identity, formb = identity) {
 
@@ -110,3 +112,12 @@ generateMed <- function(n = 1e2L,
   return(data.frame(x = x, M = M, y = y))
 }
 
+#' @keywords internal
+empiricalTransform <- function(X, Sigma) {
+  matpow <- function(mat, pow) {
+    e <- eigen(mat)
+    e$vectors %*% diag(e$values^pow) %*% solve(e$vectors)
+  }
+  # Force covariance matrix Sigma on X as per Mair, Satorra et al.
+  return(X %*% matpow(cov(X), -0.5) %*% matpow(Sigma, 0.5))
+}

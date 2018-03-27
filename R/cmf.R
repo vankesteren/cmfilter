@@ -131,7 +131,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
 
       # Check for convergence at lags
       mselLags <- cbind(mselLags[,-1], msel)
-      converged <- all(apply(mselLags, 1, function(x) (all(x) | !any(x))))
+      converged <- rowSums(lags) %% stableLag + 1 == 0 # Thanks Oisin!
       if (converged) {
         if (verbose) cat("\nAlgorithm converged",
                          "\n\n-----------\n\n")
@@ -229,9 +229,9 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
       # calculate residuals wrt this model matrix
       cp <- crossprod(Mx)
       # residual of X
-      xres <- x - Mx %*% solve(cp, crossprod(Mx, x))
+      r_x <- x - Mx %*% solve(cp, crossprod(Mx, x))
       # residual of Y
-      yres <- y - Mx %*% solve(cp, crossprod(Mx, y))
+      r_y <- y - Mx %*% solve(cp, crossprod(Mx, y))
     } else {
       # no mediators selected
       xres <- x
@@ -239,7 +239,7 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
     }
 
     # perform decision function
-    if (decisionFunction(xres, m, yres, ...)) {
+    if (decisionFunction(r_x, m, r_y, ...)) {
       msel[med] <- 1L
       currentsum <- currentsum + 1
     } else {
