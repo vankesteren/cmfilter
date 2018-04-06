@@ -100,9 +100,9 @@ setCutoff <- function(object, cutoff) {
     if (requireNamespace("changepoint", quietly = TRUE)) {
       ordsel <- object$selectionRate[order(object$selectionRate,
                                            decreasing = TRUE)]
-      cpt <- changepoint::cpt.var(ordsel, Q = 1)
+      cpt <- changepoint::cpt.meanvar(ordsel, Q = 1)
       cptcutoff <- ordsel[cpt@cpts[1]] - 1e-12
-      object <- setCutoff(object, cptcutoff)
+      object <- setCutoff(object, ifelse(cptcutoff < 0, 1e-12, cptcutoff))
     } else {
       stop("Package \"changepoint\" needed for automatic cutoff detection")
     }

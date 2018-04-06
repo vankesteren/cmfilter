@@ -50,7 +50,8 @@ generateMed <- function(n = 1e2L,
            " argument. Please install it.",
            call. = FALSE)
     }
-    if (!is.matrix(Sigma) || ncol(Sigma) != nrow(Sigma) ||
+    if (!(is.matrix(Sigma) || class(Sigma) == "dgCMatrix") ||
+        ncol(Sigma) != nrow(Sigma) ||
         !isSymmetric(Sigma)) {
       stop("Sigma needs to be a square symmetric covariance matrix.")
     }
@@ -88,18 +89,40 @@ generateMed <- function(n = 1e2L,
     }
 
     # Marginal covariance matrix of x & M
-    sigmaXM <- diag(ncol(Sigma) + 1)
-    sigmaXM[-1,-1] <- Sigma
-    sigmaXM[1,-1] <- a
-    sigmaXM[-1,1] <- a
+    if (class(Sigma) == "dgCMatrix") {
+      # use sparse matrices. empirical unavailable
+      if (empirical) stop("Empirical not available with sparse matrices")
 
-    # Calculate residual variance of y
-    pathsToY <- c(dir, b)
-    vary <- t(pathsToY) %*% sigmaXM %*% pathsToY # propagation of error
-    resy <- vary/r2y - vary # residual variance of y
 
-    # Simulate the residuals of M
-    if (!empirical) resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
+      # generate residuals of M
+      resM <- sparseMVN::rmvn.sparse(n, numeric(length(a)), Cholesky(psi),
+                                     prec = FALSE)
+
+
+      # calculate residual of y
+      Sigma2 <- cbind(as.matrix(a), Sigma)
+      SigmaXM <- rbind(t(as.matrix(Matrix::c.sparseVector(1, a))), Sigma2)
+
+      pathsToY <- Matrix::c.sparseVector(dir, b)
+
+      vary <- as.numeric(t(pathsToY) %*% SigmaXM %*% pathsToY)
+      resy <- vary/r2y - vary # residual variance of y
+
+
+    } else {
+      sigmaXM <- diag(ncol(Sigma) + 1)
+      sigmaXM[-1,-1] <- Sigma
+      sigmaXM[ 1,-1] <- a
+      sigmaXM[-1, 1] <- a
+
+      # Calculate residual variance of y
+      pathsToY <- c(dir, b)
+      vary <- t(pathsToY) %*% sigmaXM %*% pathsToY # propagation of error
+      resy <- vary/r2y - vary # residual variance of y
+
+      # Simulate the residuals of M
+      if (!empirical) resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
+    }
   }
 
 
@@ -109,6 +132,8 @@ generateMed <- function(n = 1e2L,
     M <- forma(x %*% t(a)) + resM
     y <- formb(M %*% b) + formb(dir * x) + rnorm(n, sd = sqrt(resy))
     if (scaley) y <- scale(y)
+    if (class(M) == "dgeMatrix") M <- matrix(M, n)
+    if (class(y) == "dgeMatrix") y <- as.numeric(y)
     return(data.frame(x = x, M = M, y = y))
   } else {
     if (missing(Sigma)) stop("Empirical not allowed without Sigma")
