@@ -18,7 +18,7 @@
 #'
 #' @export
 plot.cmf <- function(x, removeZeros = FALSE,
-                      line = TRUE, las = 2, ylim = c(0, 1), ...) {
+                     line = TRUE, las = 2, ylim = c(0, 1), ...) {
   sp <- x$selectionRate
   if (removeZeros) sp <- sp[sp != 0]
   barplot(sp, las = las, ylim = ylim, ...)
