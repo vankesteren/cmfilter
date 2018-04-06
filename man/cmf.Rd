@@ -43,7 +43,7 @@ increase the stableLag parameter.}
 \item{cutoff}{a cutoff value for selection: variables are selected if they
 display a selection rate higher than this value. Only relevant when multiple
 starts are specified. Can also be specified post-hoc using
-\code{\link{setCutoff}}}
+\code{\link{setCutoff}}.}
 
 \item{parallel}{whether to run the multiple starts in parallel}
 
@@ -58,7 +58,7 @@ multiple starts are specified.}
 \item{...}{parameters passed to decisionFunction}
 }
 \value{
-a list of class *cmf*. See \code{\link{cmf-methods}}
+an object of class \code{cmf}. See \code{\link{cmf-methods}}
 }
 \description{
 This function performs CMF on a set of potential mediators, given an input

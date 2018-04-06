@@ -6,7 +6,8 @@
 #' @param line whether to show a line at the chosen cutoff
 #' @param las las argument to barplot
 #' @param ylim y limits argument to barplot
-#' @param cutoff new cutoff for mediator selections
+#' @param cutoff new cutoff for mediator selections. If left out, use
+#' changepoint detection to automatically select the number of variables.
 #' @param ... other arguments passed to barplot and summary
 #'
 #' @seealso \code{\link{cmf}}
@@ -20,7 +21,7 @@ plot.cmf <- function(x, removeZeros = FALSE,
                       line = TRUE, las = 2, ylim = c(0, 1), ...) {
   sp <- x$selectionRate
   if (removeZeros) sp <- sp[sp != 0]
-  barplot(sp, las = las, ylim = c(0, 1), ...)
+  barplot(sp, las = las, ylim = ylim, ...)
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
   if (line) abline(h = co, lty = 3)
@@ -30,7 +31,7 @@ plot.cmf <- function(x, removeZeros = FALSE,
 #'
 #' @export
 summary.cmf <- function(object, ...) {
-  cat("\ncmf Algorithm Results\n\n")
+  cat("\nCMF Algorithm Results\n\n")
   cat("----------------------\n\n")
   cat("call:\n")
   print(object$call)
@@ -90,9 +91,21 @@ print.cmf <- function(x, ...) {
 #'
 #' @export
 setCutoff <- function(object, cutoff) {
-  if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
-    stop("Input cutoff between 0 and 1")
-  object$call$cutoff <- cutoff
-  object$selection <- object$selectionRate > cutoff
+  if (!missing(cutoff)) {
+    if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
+      stop("Input cutoff between 0 and 1")
+    object$call$cutoff <- cutoff
+    object$selection <- object$selectionRate > cutoff
+  } else {
+    if (requireNamespace("changepoint", quietly = TRUE)) {
+      ordsel <- object$selectionRate[order(object$selectionRate,
+                                           decreasing = TRUE)]
+      cpt <- changepoint::cpt.var(ordsel, Q = 1)
+      cptcutoff <- ordsel[cpt@cpts[1]] - 1e-12
+      object <- setCutoff(object, cptcutoff)
+    } else {
+      stop("Package \"changepoint\" needed for automatic cutoff detection")
+    }
+  }
   object
 }

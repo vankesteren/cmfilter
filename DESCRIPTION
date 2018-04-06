@@ -13,5 +13,6 @@ LazyData: true
 Suggests: MASS,
     pbapply,
     parallel,
-    crayon
+    crayon,
+    changepoint
 RoxygenNote: 6.0.1

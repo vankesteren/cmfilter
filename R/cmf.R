@@ -32,7 +32,7 @@
 #' @param cutoff a cutoff value for selection: variables are selected if they
 #' display a selection rate higher than this value. Only relevant when multiple
 #' starts are specified. Can also be specified post-hoc using
-#' \code{\link{setCutoff}}
+#' \code{\link{setCutoff}}.
 #'
 #' @param parallel whether to run the multiple starts in parallel
 #' @param nCores how many threads (cores) to use for parallel processing
@@ -52,7 +52,7 @@
 #'  - \code{prodCoef} (\code{p.value} = 0.05): Test for the product of coefficients, Sobel
 #'  test
 #'
-#' @return a list of class *cmf*. See \code{\link{cmf-methods}}
+#' @return an object of class \code{cmf}. See \code{\link{cmf-methods}}
 #'
 #'
 #' @export
@@ -63,6 +63,18 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
                 subSampling = FALSE,
                 cutoff = 0.5, parallel = FALSE, nCores = 2,
                 verbose = FALSE, progressBar = FALSE, ...) {
+
+  if (is.data.frame(x) && missing(M) && missing(y)) {
+    d <- x
+    dn <- colnames(d)
+    if (all(c("x","y") %in% dn)) {
+      x <- d$x
+      y <- d$y
+      M <- d[,!colnames(d) %in% c("x", "y")]
+    } else {
+      stop("Enter a data frame with x and y variables")
+    }
+  }
 
   # input checking
   if (randomStart > nrow(M))
@@ -131,7 +143,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
 
       # Check for convergence at lags
       mselLags <- cbind(mselLags[,-1], msel)
-      converged <- rowSums(lags) %% (stableLag + 1) == 0 # Thanks Oisin!
+      converged <- all(rowSums(mselLags) %% (stableLag + 1) == 0) # Thanks Oisin!
       if (converged) {
         if (verbose) cat("\nAlgorithm converged",
                          "\n\n-----------\n\n")
@@ -234,8 +246,8 @@ cmfStep <- function(x, M, y, decisionFunction, msel, medsamp, ...) {
       r_y <- y - Mx %*% solve(cp, crossprod(Mx, y))
     } else {
       # no mediators selected
-      xres <- x
-      yres <- y
+      r_x <- x
+      r_y <- y
     }
 
     # perform decision function
