@@ -15,6 +15,7 @@
 #' @importFrom graphics barplot abline
 #'
 #' @name cmf-methods
+#' @method plot cmf
 #'
 #' @export
 plot.cmf <- function(x, removeZeros = FALSE,
@@ -29,6 +30,7 @@ plot.cmf <- function(x, removeZeros = FALSE,
 
 #' @rdname cmf-methods
 #'
+#' @method summary cmf
 #' @export
 summary.cmf <- function(object, ...) {
   cat("\nCMF Algorithm Results\n\n")
@@ -82,6 +84,7 @@ summary.cmf <- function(object, ...) {
 
 #' @rdname cmf-methods
 #'
+#' @method print cmf
 #' @export
 print.cmf <- function(x, ...) {
   summary(x, ...)
@@ -100,7 +103,7 @@ setCutoff <- function(object, cutoff) {
     if (requireNamespace("changepoint", quietly = TRUE)) {
       ordsel <- object$selectionRate[order(object$selectionRate,
                                            decreasing = TRUE)]
-      cpt <- changepoint::cpt.meanvar(ordsel, Q = 1)
+      cpt <- changepoint::cpt.var(ordsel, Q = 1)
       cptcutoff <- ordsel[cpt@cpts[1]] - 1e-12
       object <- setCutoff(object, ifelse(cptcutoff < 0, 1e-12, cptcutoff))
     } else {

@@ -8,8 +8,8 @@
 \alias{setCutoff}
 \title{Methods for cmf results lists}
 \usage{
-plot.cmf(x, removeZeros = FALSE, line = TRUE, las = 2, ylim = c(0, 1),
-  ...)
+\method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
+  ylim = c(0, 1), ...)
 
 \method{summary}{cmf}(object, ...)
 

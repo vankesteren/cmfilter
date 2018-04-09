@@ -27,7 +27,8 @@
 #'                    b = c(0.8, 0.48),
 #'                    Sigma = matrix(c(1, -0.6, -0.6, 1), 2))
 #'
-#' @importFrom stats rnorm
+#' @importFrom stats rnorm cov
+#' @import Matrix
 #'
 #' @export
 generateMed <- function(n = 1e2L,
@@ -38,27 +39,31 @@ generateMed <- function(n = 1e2L,
                         forma = identity, formb = identity) {
 
   # Input checking
-  if (r2y > 1 || r2y <= 0) {
-    stop("Arg r2y should be in range (0,1]")
-  }
-  if (length(a) != length(b)) {
-    stop("There should be as many a paths as b paths!")
-  }
-  if (!missing(Sigma)) {
-    if (!requireNamespace("MASS", quietly = TRUE)) {
-      stop("Package MASS is needed for this function to work with the Sigma",
-           " argument. Please install it.",
-           call. = FALSE)
+  if (class(a) != "dsparseVector") {
+    # user knows what they're doing if sparse vectors, skip input check
+    if (r2y > 1 || r2y <= 0) {
+      stop("Arg r2y should be in range (0,1]")
     }
-    if (!(is.matrix(Sigma) || class(Sigma) == "dgCMatrix") ||
-        ncol(Sigma) != nrow(Sigma) ||
-        !isSymmetric(Sigma)) {
-      stop("Sigma needs to be a square symmetric covariance matrix.")
+    if (length(a) != length(b)) {
+      stop("There should be as many a paths as b paths!")
     }
-    if (ncol(Sigma) != length(a)) {
-      stop("Sigma should have as many cols & rows as a & b paths.")
+    if (!missing(Sigma)) {
+      if (!requireNamespace("MASS", quietly = TRUE)) {
+        stop("Package MASS is needed for this function to work with the Sigma",
+             " argument. Please install it.",
+             call. = FALSE)
+      }
+      if (!is.matrix(Sigma) ||
+          ncol(Sigma) != nrow(Sigma) ||
+          !isSymmetric(Sigma)) {
+        stop("Sigma needs to be a square symmetric covariance matrix.")
+      }
+      if (ncol(Sigma) != length(a)) {
+        stop("Sigma should have as many cols & rows as a & b paths.")
+      }
     }
   }
+
 
   if (missing(Sigma)) {
     if (any(c(a > 1, a < -1))) {
@@ -95,21 +100,19 @@ generateMed <- function(n = 1e2L,
 
 
       # generate residuals of M
-      resM <- sparseMVN::rmvn.sparse(n, numeric(length(a)), Cholesky(psi),
-                                     prec = FALSE)
+      prec <- Matrix::solve(psi, sparse = TRUE)
+      resM <- sparseMVN::rmvn.sparse(n, numeric(length(a)), Cholesky(prec))
 
 
-      # calculate residual of y
+      # calculate residual variance of y
       Sigma2 <- cbind(as.matrix(a), Sigma)
       SigmaXM <- rbind(t(as.matrix(Matrix::c.sparseVector(1, a))), Sigma2)
-
       pathsToY <- Matrix::c.sparseVector(dir, b)
-
       vary <- as.numeric(t(pathsToY) %*% SigmaXM %*% pathsToY)
       resy <- vary/r2y - vary # residual variance of y
 
-
     } else {
+
       sigmaXM <- diag(ncol(Sigma) + 1)
       sigmaXM[-1,-1] <- Sigma
       sigmaXM[ 1,-1] <- a
@@ -122,6 +125,7 @@ generateMed <- function(n = 1e2L,
 
       # Simulate the residuals of M
       if (!empirical) resM <- MASS::mvrnorm(n, numeric(ncol(psi)), psi)
+
     }
   }
 
