@@ -107,7 +107,6 @@ registerLapplyFun <- function(parallel, progressBar, nCores) {
 
         # run the apply function
         out <- pbapply::pblapply(X = X, FUN = FUN, cl = clus)
-        parallel::stopCluster(clus)
         return(out)
       }
     } else {
@@ -122,7 +121,6 @@ registerLapplyFun <- function(parallel, progressBar, nCores) {
 
         # run the apply function
         out <- parallel::parLapply(X = X, fun = FUN, cl = clus)
-        parallel::stopCluster(clus)
         return(out)
       }
     }

@@ -6,7 +6,7 @@
 \usage{
 cmf(x, M, y, decisionFunction = "corMinusPartCor", maxIter = 10,
   stableLag = 1, nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
-  subSampling = FALSE, cutoff = 0.5, parallel = FALSE, nCores = 2,
+  subSetting = FALSE, cutoff = 0.5, parallel = FALSE, nCores = 2,
   verbose = FALSE, progressBar = FALSE, ...)
 }
 \arguments{
@@ -36,7 +36,7 @@ will be selected; whichever is lowest.}
 \item{randomOrder}{whether the order of the mediators is randomised before
 the start of each iteration}
 
-\item{subSampling}{whether to consider only a part of the variables at each
+\item{subSetting}{whether to consider only a part of the variables at each
 iteration, similar to how random forest decorrelates its trees. If true,
 increase the stableLag parameter.}
 

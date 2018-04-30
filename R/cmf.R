@@ -26,7 +26,7 @@
 #' will be selected; whichever is lowest.
 #' @param randomOrder whether the order of the mediators is randomised before
 #' the start of each iteration
-#' @param subSampling whether to consider only a part of the variables at each
+#' @param subSetting whether to consider only a part of the variables at each
 #' iteration, similar to how random forest decorrelates its trees. If true,
 #' increase the stableLag parameter.
 #' @param cutoff a cutoff value for selection: variables are selected if they
@@ -60,7 +60,7 @@
 cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
                 maxIter = 10, stableLag = 1,
                 nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
-                subSampling = FALSE,
+                subSetting = FALSE,
                 cutoff = 0.5, parallel = FALSE, nCores = 2,
                 verbose = FALSE, progressBar = FALSE, ...) {
 
@@ -119,7 +119,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
       msel[1:len] <- generateStart(len, min(floor(nrow(M)/2), floor(len/2)))
     }
 
-    if (subSampling) {
+    if (subSetting) {
       # select a random number of variables to consider
       # see James, Witten, Hastie & Tibshirani ISLR (p. 319)
       sub <- ceiling(sqrt(len))
@@ -133,7 +133,7 @@ cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
     }
 
     for (i in 1:maxIter) {
-      if (randomOrder || subSampling) {
+      if (randomOrder || subSetting) {
         medsamp <- sample(1:len, sub)
       }
       msel <- cmfStep(x, M, y, decisionFunction, msel, medsamp, ...)
