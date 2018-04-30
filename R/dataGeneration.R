@@ -48,11 +48,6 @@ generateMed <- function(n = 1e2L,
       stop("There should be as many a paths as b paths!")
     }
     if (!missing(Sigma)) {
-      if (!requireNamespace("MASS", quietly = TRUE)) {
-        stop("Package MASS is needed for this function to work with the Sigma",
-             " argument. Please install it.",
-             call. = FALSE)
-      }
       if (!is.matrix(Sigma) ||
           ncol(Sigma) != nrow(Sigma) ||
           !isSymmetric(Sigma)) {
@@ -159,10 +154,6 @@ generateMed <- function(n = 1e2L,
 
 #' @keywords internal
 empiricalTransform <- function(X, Sigma) {
-  matpow <- function(mat, pow) {
-    e <- eigen(mat)
-    e$vectors %*% diag(e$values^pow) %*% solve(e$vectors)
-  }
   # Force covariance matrix Sigma on X as per Mair, Satorra et al.
-  return(X %*% matpow(cov(X), -0.5) %*% matpow(Sigma, 0.5))
+  return(X %*% expm::sqrtm(solve(cov(X))) %*% expm::sqrtm(Sigma))
 }

@@ -94,33 +94,26 @@ registerCatFun <- function(w, m) {
 #' @keywords internal
 
 registerLapplyFun <- function(parallel, progressBar, nCores) {
-  if (parallel == TRUE) {
-    if (!requireNamespace("parallel", quietly = TRUE)) {
-      stop("Package parallel is needed for parallel processing.",
-           call. = FALSE)
-    }
+  if (parallel) {
     if (progressBar) {
-      if (!requireNamespace("pbapply", quietly = TRUE)) {
-        stop("Package pbapply is needed for progress bars.",
-             call. = FALSE)
-      } else {
-        lapplyfun <- function(X, FUN) {
-          clus <- parallel::makeCluster(nCores)
+      lapplyfun <- function(X, FUN) {
+        clus <- parallel::makeCluster(nCores)
+        on.exit(parallel::stopCluster(clus))
 
-          # initialise the cluster with the exact environment of the cmf call
-          parallel::clusterEvalQ(clus, {library(cmfilter)})
-          vars <- ls(envir = parent.frame())
-          parallel::clusterExport(clus, vars[vars != "clus"], parent.frame())
+        # initialise the cluster with the exact environment of the cmf call
+        parallel::clusterEvalQ(clus, {library(cmfilter)})
+        vars <- ls(envir = parent.frame())
+        parallel::clusterExport(clus, vars[vars != "clus"], parent.frame())
 
-          # run the apply function
-          out <- pbapply::pblapply(X = X, FUN = FUN, cl = clus)
-          parallel::stopCluster(clus)
-          return(out)
-        }
+        # run the apply function
+        out <- pbapply::pblapply(X = X, FUN = FUN, cl = clus)
+        parallel::stopCluster(clus)
+        return(out)
       }
     } else {
       lapplyfun <- function(X, FUN) {
         clus <- parallel::makeCluster(nCores)
+        on.exit(parallel::stopCluster(clus))
 
         # initialise the cluster with the exact environment of the cmf call
         parallel::clusterEvalQ(clus, {library(cmfilter)})
@@ -135,12 +128,7 @@ registerLapplyFun <- function(parallel, progressBar, nCores) {
     }
   } else {
     if (progressBar) {
-      if (!requireNamespace("pbapply", quietly = TRUE)) {
-        stop("Package pbapply is needed for progress bars.",
-             call. = FALSE)
-      } else {
-        lapplyfun <- pbapply::pblapply
-      }
+      lapplyfun <- pbapply::pblapply
     } else {
       lapplyfun <- lapply
     }
