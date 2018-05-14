@@ -8,6 +8,9 @@
 #' @param ylim y limits argument to barplot
 #' @param cutoff new cutoff for mediator selections. If left out, use
 #' changepoint detection to automatically select the number of variables.
+#' @param topn only show the top n mediators
+#' @param border the colour of the border around the bars (default NA)
+#' @param space the amount of space between the bars (default 0)
 #' @param ... other arguments passed to barplot and summary
 #'
 #' @seealso \code{\link{cmf}}
@@ -112,3 +115,17 @@ setCutoff <- function(object, cutoff) {
   }
   object
 }
+
+
+#' @rdname cmf-methods
+#'
+#' @importFrom stats screeplot
+#'
+#' @method screeplot cmf
+#' @export
+screeplot.cmf <- function(x, topn, border = NA, space = 0, ...) {
+  if (missing(topn)) topn <- length(x$selectionRate)
+  barplot(x$selectionRate[order(x$selectionRate, decreasing = TRUE)][1:topn],
+          border = border, space = 0, ...)
+}
+

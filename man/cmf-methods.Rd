@@ -6,6 +6,7 @@
 \alias{summary.cmf}
 \alias{print.cmf}
 \alias{setCutoff}
+\alias{screeplot.cmf}
 \title{Methods for cmf results lists}
 \usage{
 \method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
@@ -16,6 +17,8 @@
 \method{print}{cmf}(x, ...)
 
 setCutoff(object, cutoff)
+
+\method{screeplot}{cmf}(x, topn, border = NA, space = 0, ...)
 }
 \arguments{
 \item{x}{cmf object}
@@ -34,6 +37,12 @@ setCutoff(object, cutoff)
 
 \item{cutoff}{new cutoff for mediator selections. If left out, use
 changepoint detection to automatically select the number of variables.}
+
+\item{topn}{only show the top n mediators}
+
+\item{border}{the colour of the border around the bars (default NA)}
+
+\item{space}{the amount of space between the bars (default 0)}
 }
 \description{
 Methods for cmf results lists

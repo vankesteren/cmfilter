@@ -2,6 +2,7 @@
 
 S3method(plot,cmf)
 S3method(print,cmf)
+S3method(screeplot,cmf)
 S3method(summary,cmf)
 export(cmf)
 export(generateMed)
@@ -13,3 +14,4 @@ importFrom(stats,cor)
 importFrom(stats,cov)
 importFrom(stats,qnorm)
 importFrom(stats,rnorm)
+importFrom(stats,screeplot)
