@@ -22,12 +22,15 @@
 #'
 #' @export
 plot.cmf <- function(x, removeZeros = FALSE,
-                     line = TRUE, las = 2, ylim = c(0, 1), ...) {
-  sp <- x$selectionRate
+                     line = TRUE, las = 2, ylim = c(0, 1),
+                     space = 0, ...) {
+  sp <- x$selectionRat
   if (removeZeros) sp <- sp[sp != 0]
-  barplot(sp, las = las, ylim = ylim, ...)
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
+  barplot(sp, las = las, ylim = ylim, space = space,
+          border = "dark grey",
+          col = ifelse(sp < co, "grey", "#888888"), ...)
   if (line) abline(h = co, lty = 3)
 }
 
@@ -126,6 +129,7 @@ setCutoff <- function(object, cutoff) {
 screeplot.cmf <- function(x, topn, border = NA, space = 0, ...) {
   if (missing(topn)) topn <- length(x$selectionRate)
   barplot(x$selectionRate[order(x$selectionRate, decreasing = TRUE)][1:topn],
-          border = border, space = 0, ...)
+          border = border, space = 0, xaxt = "n", yaxt = "n", ...)
+  axis(2, pretty(x$selectionRate, n = 20), las = 1)
 }
 

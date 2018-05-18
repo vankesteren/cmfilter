@@ -4,13 +4,14 @@
 \alias{cmf}
 \title{Coordinate-wise Mediation Filter}
 \usage{
-cmf(x, M, y, decisionFunction = "corMinusPartCor", maxIter = 10,
-  stableLag = 1, nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
-  subSetting = FALSE, cutoff = 0.5, parallel = FALSE, nCores = 2,
-  verbose = FALSE, progressBar = FALSE, ...)
+cmf(x, M, y, decisionFunction = "corMinusPartCor", maxIter = 20,
+  stableLag = 4, nStarts = 1000, randomStart = TRUE, randomOrder = TRUE,
+  subSetting = TRUE, cutoff = 0.5, parallel = TRUE, nCores = "auto",
+  progressBar = TRUE, verbose = FALSE, ...)
 }
 \arguments{
-\item{x}{exogenous variable; numeric vector}
+\item{x}{exogenous variable; numeric vector or data frame with x, y, and at
+least one M column}
 
 \item{M}{potential mediators; data frame with column names}
 
@@ -23,7 +24,7 @@ indicating the built-in decision function to use (see details)}
 \item{maxIter}{the maximum number of iterations for each start}
 
 \item{stableLag}{how long does the selection need to be stable before
-deciding upon convergence}
+deciding the algorithm has converged}
 
 \item{nStarts}{how many times to start the algorithm, combine this with the
 randomStart parameter}
@@ -49,11 +50,11 @@ starts are specified. Can also be specified post-hoc using
 
 \item{nCores}{how many threads (cores) to use for parallel processing}
 
-\item{verbose}{whether to display iteration-based output and information.
-Does not work with parallel processing.}
-
 \item{progressBar}{whether to display a progress bar. Only relevant when
 multiple starts are specified.}
+
+\item{verbose}{whether to display iteration-based output and information.
+Does not work with parallel processing.}
 
 \item{...}{parameters passed to decisionFunction}
 }

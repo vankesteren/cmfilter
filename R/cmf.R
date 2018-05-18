@@ -6,7 +6,8 @@
 #' mediators in the model. By doing this cyclically, the algorithm converges to
 #' the best fitting subset of mediators.
 #'
-#' @param x exogenous variable; numeric vector
+#' @param x exogenous variable; numeric vector or data frame with x, y, and at
+#' least one M column
 #' @param M potential mediators; data frame with column names
 #' @param y outcome variable; numeric vector
 #'
@@ -16,7 +17,7 @@
 #'
 #' @param maxIter the maximum number of iterations for each start
 #' @param stableLag how long does the selection need to be stable before
-#' deciding upon convergence
+#' deciding the algorithm has converged
 #'
 #' @param nStarts how many times to start the algorithm, combine this with the
 #' randomStart parameter
@@ -58,11 +59,12 @@
 #' @export
 
 cmf <- function(x, M, y, decisionFunction = "corMinusPartCor",
-                maxIter = 10, stableLag = 1,
-                nStarts = 1, randomStart = TRUE, randomOrder = FALSE,
-                subSetting = FALSE,
-                cutoff = 0.5, parallel = FALSE, nCores = 2,
-                verbose = FALSE, progressBar = FALSE, ...) {
+                maxIter = 20, stableLag = 4, nStarts = 1e3,
+                randomStart = TRUE, randomOrder = TRUE, subSetting = TRUE,
+                cutoff = 0.5, parallel = TRUE, nCores = "auto",
+                progressBar = TRUE, verbose = FALSE, ...) {
+
+  if (nCores == "auto")  nCores <- parallel::detectCores()
 
   if (is.data.frame(x) && missing(M) && missing(y)) {
     d <- x

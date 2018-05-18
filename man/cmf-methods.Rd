@@ -10,7 +10,7 @@
 \title{Methods for cmf results lists}
 \usage{
 \method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
-  ylim = c(0, 1), ...)
+  ylim = c(0, 1), border = NA, space = 0, ...)
 
 \method{summary}{cmf}(object, ...)
 
@@ -31,6 +31,10 @@ setCutoff(object, cutoff)
 
 \item{ylim}{y limits argument to barplot}
 
+\item{border}{the colour of the border around the bars (default NA)}
+
+\item{space}{the amount of space between the bars (default 0)}
+
 \item{...}{other arguments passed to barplot and summary}
 
 \item{object}{cmf object}
@@ -39,10 +43,6 @@ setCutoff(object, cutoff)
 changepoint detection to automatically select the number of variables.}
 
 \item{topn}{only show the top n mediators}
-
-\item{border}{the colour of the border around the bars (default NA)}
-
-\item{space}{the amount of space between the bars (default 0)}
 }
 \description{
 Methods for cmf results lists
