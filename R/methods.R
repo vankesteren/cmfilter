@@ -23,13 +23,13 @@
 #' @export
 plot.cmf <- function(x, removeZeros = FALSE,
                      line = TRUE, las = 2, ylim = c(0, 1),
-                     space = 0, ...) {
+                     space = 0, border = "dark grey", ...) {
   sp <- x$selectionRat
   if (removeZeros) sp <- sp[sp != 0]
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
   barplot(sp, las = las, ylim = ylim, space = space,
-          border = "dark grey",
+          border = ,
           col = ifelse(sp < co, "grey", "#888888"), ...)
   if (line) abline(h = co, lty = 3)
 }
@@ -123,6 +123,7 @@ setCutoff <- function(object, cutoff) {
 #' @rdname cmf-methods
 #'
 #' @importFrom stats screeplot
+#' @importFrom graphics axis
 #'
 #' @method screeplot cmf
 #' @export

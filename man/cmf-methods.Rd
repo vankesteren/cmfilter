@@ -10,7 +10,7 @@
 \title{Methods for cmf results lists}
 \usage{
 \method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
-  ylim = c(0, 1), border = NA, space = 0, ...)
+  ylim = c(0, 1), space = 0, border = "dark grey", ...)
 
 \method{summary}{cmf}(object, ...)
 
@@ -31,9 +31,9 @@ setCutoff(object, cutoff)
 
 \item{ylim}{y limits argument to barplot}
 
-\item{border}{the colour of the border around the bars (default NA)}
-
 \item{space}{the amount of space between the bars (default 0)}
+
+\item{border}{the colour of the border around the bars (default NA)}
 
 \item{...}{other arguments passed to barplot and summary}
 
