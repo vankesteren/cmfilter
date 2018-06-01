@@ -4,10 +4,9 @@
 \alias{cmf}
 \title{Coordinate-wise Mediation Filter}
 \usage{
-cmf(x, M, y, decisionFunction = "corMinusPartCor", maxIter = 20,
-  stableLag = 4, nStarts = 1000, randomStart = TRUE, randomOrder = TRUE,
-  subSetting = TRUE, cutoff = 0.5, parallel = TRUE, nCores = "auto",
-  progressBar = TRUE, verbose = FALSE, ...)
+cmf(x, M, y, decisionFunction = "prodcoef", nStarts = 1000,
+  nCores = "auto", cutoff = 0.5, maxIter = 25, stableLag = 5,
+  pb = TRUE, ...)
 }
 \arguments{
 \item{x}{exogenous variable; numeric vector or data frame with x, y, and at
@@ -21,40 +20,22 @@ least one M column}
 and as output a TRUE (include) or FALSE (exclude) statement or a string
 indicating the built-in decision function to use (see details)}
 
-\item{maxIter}{the maximum number of iterations for each start}
+\item{nStarts}{how many times to start the algorithm}
 
-\item{stableLag}{how long does the selection need to be stable before
-deciding the algorithm has converged}
-
-\item{nStarts}{how many times to start the algorithm, combine this with the
-randomStart parameter}
-
-\item{randomStart}{either FALSE for a start with no variables selected, or
-the number of mediators to be randomly drawn for the initiations. TRUE means
-half of the available degrees of freedom will be spent or half the mediators
-will be selected; whichever is lowest.}
-
-\item{randomOrder}{whether the order of the mediators is randomised before
-the start of each iteration}
-
-\item{subSetting}{whether to consider only a part of the variables at each
-iteration, similar to how random forest decorrelates its trees. If true,
-increase the stableLag parameter.}
+\item{nCores}{how many threads (cores) to use for parallel processing}
 
 \item{cutoff}{a cutoff value for selection: variables are selected if they
 display a selection rate higher than this value. Only relevant when multiple
 starts are specified. Can also be specified post-hoc using
 \code{\link{setCutoff}}.}
 
-\item{parallel}{whether to run the multiple starts in parallel}
+\item{maxIter}{the maximum number of iterations for each start}
 
-\item{nCores}{how many threads (cores) to use for parallel processing}
+\item{stableLag}{how long does the selection need to be stable before
+deciding the algorithm has converged}
 
-\item{progressBar}{whether to display a progress bar. Only relevant when
-multiple starts are specified.}
-
-\item{verbose}{whether to display iteration-based output and information.
-Does not work with parallel processing.}
+\item{pb}{Whether to display a progress bar (default TRUE). Only available 
+with built-in decision functions}
 
 \item{...}{parameters passed to decisionFunction}
 }
@@ -65,15 +46,17 @@ an object of class \code{cmf}. See \code{\link{cmf-methods}}
 This function performs CMF on a set of potential mediators, given an input
 and an output variable. It selects those mediators that are deemed relevant
 by a default or a user-defined decision function, *conditional* on the other
-mediators in the model. By doing this cyclically, the algorithm converges to
-the best fitting subset of mediators.
+mediators in the model. By doing this cyclically, and with multiple random
+starts, the algorithm outputs an estimate of the best mediators.
 }
 \details{
-Available decision functions (arguments = defaultvalue):
+Available decision functions. These functions are implemented in 
+C++ to speed up computation. Between brackets the additional parameter that 
+may be passed to the function in the \code{...} argument of this function. 
+(\code{arguments} = \code{defaultvalue}):
 
- - \code{corMinusPartCor} (\code{p.value} = 0.05): Test for xy correlation minus the
- partial xy.m correlation
-
- - \code{prodCoef} (\code{p.value} = 0.05): Test for the product of coefficients, Sobel
- test
+ - \code{prodcoef} (\code{p.value} = 0.1): Test for the product of 
+ coefficients, Sobel test
+ 
+ - \code{causalsteps} (\code{p.value} = 0.1): Causal steps test min(Ta, Tb)
 }

@@ -1,15 +1,15 @@
 #' Methods for cmf results lists
 #'
+#' Plotting, summarising, and printing cmf objects
+#'
 #' @param x cmf object
 #' @param object cmf object
 #' @param removeZeros whether to remove the unselected mediators from the plot
 #' @param line whether to show a line at the chosen cutoff
 #' @param las las argument to barplot
 #' @param ylim y limits argument to barplot
-#' @param cutoff new cutoff for mediator selections. If left out, use
-#' changepoint detection to automatically select the number of variables.
 #' @param topn only show the top n mediators
-#' @param border the colour of the border around the bars (default NA)
+#' @param border the colour of the border around the bars
 #' @param space the amount of space between the bars (default 0)
 #' @param ... other arguments passed to barplot and summary
 #'
@@ -24,7 +24,7 @@
 plot.cmf <- function(x, removeZeros = FALSE,
                      line = TRUE, las = 2, ylim = c(0, 1),
                      space = 0, border = "dark grey", ...) {
-  sp <- x$selectionRat
+  sp <- x$selectionRate
   if (removeZeros) sp <- sp[sp != 0]
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
@@ -33,6 +33,21 @@ plot.cmf <- function(x, removeZeros = FALSE,
           col = ifelse(sp < co, "grey", "#888888"), ...)
   if (line) abline(h = co, lty = 3)
 }
+
+#' @rdname cmf-methods
+#'
+#' @importFrom stats screeplot
+#' @importFrom graphics axis
+#'
+#' @method screeplot cmf
+#' @export
+screeplot.cmf <- function(x, topn, border = NA, space = 0, ...) {
+  if (missing(topn)) topn <- length(x$selectionRate)
+  barplot(x$selectionRate[order(x$selectionRate, decreasing = TRUE)][1:topn],
+          border = border, space = 0, xaxt = "n", yaxt = "n", ...)
+  axis(2, pretty(x$selectionRate, n = 20), las = 1)
+}
+
 
 #' @rdname cmf-methods
 #'
@@ -45,23 +60,16 @@ summary.cmf <- function(object, ...) {
   print(object$call)
   cat("\n")
   ns <- sum(object$selection)
-  if (object$converged) {
-    cat("Algorithm converged. \n")
-  } else {
-    cat("Algorithm did not (always) converge. Try multiple starts with cutoff.")
-    cat("\n\n")
-  }
   cat("variables selected:", ns, "\n")
 
   rescall <- as.list(object$call)
   pars <- names(rescall)
-  if ("nStarts" %in% pars) {
-    nStarts <- rescall$nStarts
-    cat("number of starts:", nStarts, "\n")
-    co <- as.list(object$call)$cutoff
-    if (is.null(co)) co <- 0.5
-    cat("cutoff probability:", co, "\n")
-  }
+  ns <- rescall$nStarts
+  if (is.null(ns)) ns <- 1000
+  cat("number of starts:", ns, "\n")
+  co <- rescall$cutoff
+  if (is.null(co)) co <- 0.5
+  cat("cutoff probability:", co, "\n")
 
   apars <- pars[!pars %in% names(as.list(args(cmfilter::cmf)))]
   if (length(apars) > 0) {
@@ -96,41 +104,104 @@ print.cmf <- function(x, ...) {
   summary(x, ...)
 }
 
-#' @rdname cmf-methods
+#' Add samples to existing cmf results object
 #'
+#' This function adds additional samples to the existing results object
+#'
+#' @param object a cmf object
+#' @param nStarts the number of starts to add (default 100)
+#' @param ... not used
+#'
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' res <- cmf(dat)
+#' # double the samples
+#' res <- update(res, 1000)
+#'
+#' @method update cmf
 #' @export
-setCutoff <- function(object, cutoff) {
-  if (!missing(cutoff)) {
-    if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
-      stop("Input cutoff between 0 and 1")
-    object$call$cutoff <- cutoff
-    object$selection <- object$selectionRate > cutoff
+update.cmf <- function(object, nStarts = 100, ...) {
+  newcall <- object$call
+  newcall$nStarts <- nStarts
+  
+  
+  # evaluate the new call in the parent environment
+  newres <- eval.parent(newcall)
+  
+  if (is.null(object$call$nStarts)) {
+    oldn <- 1e3
   } else {
-    if (requireNamespace("changepoint", quietly = TRUE)) {
-      ordsel <- object$selectionRate[order(object$selectionRate,
-                                           decreasing = TRUE)]
-      cpt <- changepoint::cpt.var(ordsel, Q = 1)
-      cptcutoff <- ordsel[cpt@cpts[1]] - 1e-12
-      object <- setCutoff(object, ifelse(cptcutoff < 0, 1e-12, cptcutoff))
-    } else {
-      stop("Package \"changepoint\" needed for automatic cutoff detection")
-    }
+    oldn <- object$call$nStarts
   }
+  
+  if (is.null(object$call$cutoff)) {
+    co <- .5
+  } else {
+    co <- object$call$cutoff
+  }
+  
+  object$selectionRate <-
+    (object$selectionRate*oldn + newres$selectionRate*nStarts) / (oldn+nStarts)
+  
+  object$call$nStarts <- oldn+nStarts
+  
+  object$selection <- object$selectionRate > co
+  
   object
 }
 
-
-#' @rdname cmf-methods
-#'
-#' @importFrom stats screeplot
-#' @importFrom graphics axis
-#'
-#' @method screeplot cmf
+#' Set the cutoff for mediator selection
+#' 
+#' This function sets the cutoff value on a cmf object for mediator selection. 
+#' Any cutoff value between 0 and 1 is allowed, where potential mediators with 
+#' empirical selection probability (selection rate) above the cutoff will be 
+#' considered mediators and the others will not. The cutoff can be entered 
+#' manually or, when set to "mc", be based on a monte carlo simulation. See 
+#' "details"
+#' 
+#' @param object a cmf object
+#' @param cutoff either a number between 0 and 1 or "mc" - see details
+#' 
+#' @return a cmf object with updated cutoff value
+#' 
+#' @details The monte carlo determination is based on a procedure in 
+#' PCA and Factor Analysis called "Parallel Analysis". We generate data from
+#' the null hypothesis with the same dimensionality as the original dataset and
+#' perform the algorithm 100 times. This creates a distribution of nonmediator
+#' selection rates from which we can determine the cutoff (the 99.9th 
+#' percentile)
+#' 
+#' 
 #' @export
-screeplot.cmf <- function(x, topn, border = NA, space = 0, ...) {
-  if (missing(topn)) topn <- length(x$selectionRate)
-  barplot(x$selectionRate[order(x$selectionRate, decreasing = TRUE)][1:topn],
-          border = border, space = 0, xaxt = "n", yaxt = "n", ...)
-  axis(2, pretty(x$selectionRate, n = 20), las = 1)
+setCutoff <- function(object, cutoff = .5) {
+  if (cutoff == "mc") {
+    # monte carlo determination of cutoff
+    M <- eval(object$call$M)
+    x <- eval(object$call$x)
+    dec <- object$call$decisionFunction
+    if (is.null(dec)) dec <- "prodcoef"
+    if (is.function(dec)) { 
+      dec <- "prodcoef"
+      warning("Parallel analysis inaccurate with nonstandard decisionFunction.")
+    }
+    if (is.null(M)) {
+      p <- ncol(x) - 2 
+      n <- nrow(x)
+    } else {
+      p <- ncol(M)
+      n <- nrow(M)
+    }
+    parll <- as.vector(pbsapply(1:100, function(i) {
+      cmf(generateMed(n, numeric(p), numeric(p)), 
+          decisionFunction = dec, 
+          pb = FALSE)$selectionRate
+    }))
+    return(setCutoff(object, quantile(parll, 0.999)))
+  }
+  if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
+    stop("Input cutoff between 0 and 1")
+  object$call$cutoff <- cutoff
+  object$selection <- object$selectionRate > cutoff
+  object
 }
 

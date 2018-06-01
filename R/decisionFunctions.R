@@ -1,4 +1,5 @@
 # This file contains decision functions (not exported)
+# to use, pass cmfilter:::corMinusPartCor to cmf function
 
 #' the difference in coefficients decision function (correlation - partial cor)
 #'

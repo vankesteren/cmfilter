@@ -3,22 +3,19 @@
 \name{cmf-methods}
 \alias{cmf-methods}
 \alias{plot.cmf}
+\alias{screeplot.cmf}
 \alias{summary.cmf}
 \alias{print.cmf}
-\alias{setCutoff}
-\alias{screeplot.cmf}
 \title{Methods for cmf results lists}
 \usage{
 \method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
   ylim = c(0, 1), space = 0, border = "dark grey", ...)
 
+\method{screeplot}{cmf}(x, topn, border = NA, space = 0, ...)
+
 \method{summary}{cmf}(object, ...)
 
 \method{print}{cmf}(x, ...)
-
-setCutoff(object, cutoff)
-
-\method{screeplot}{cmf}(x, topn, border = NA, space = 0, ...)
 }
 \arguments{
 \item{x}{cmf object}
@@ -33,19 +30,16 @@ setCutoff(object, cutoff)
 
 \item{space}{the amount of space between the bars (default 0)}
 
-\item{border}{the colour of the border around the bars (default NA)}
+\item{border}{the colour of the border around the bars}
 
 \item{...}{other arguments passed to barplot and summary}
 
-\item{object}{cmf object}
-
-\item{cutoff}{new cutoff for mediator selections. If left out, use
-changepoint detection to automatically select the number of variables.}
-
 \item{topn}{only show the top n mediators}
+
+\item{object}{cmf object}
 }
 \description{
-Methods for cmf results lists
+Plotting, summarising, and printing cmf objects
 }
 \seealso{
 \code{\link{cmf}}
