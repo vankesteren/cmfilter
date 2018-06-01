@@ -193,9 +193,9 @@ setCutoff <- function(object, cutoff = .5) {
       n <- nrow(M)
     }
     parll <- as.vector(pbapply::pbsapply(1:100, function(i) {
-      cmf(generateMed(n, numeric(p), numeric(p)), 
-          decisionFunction = dec, 
-          pb = FALSE)$selectionRate
+      mockdat <- matrix(rnorm(n*(p+2)), n)
+      colnames(mockdat) <- c("x", paste0("M.", 1:p), "y")
+      cmf(mockdat, decisionFunction = dec, pb = FALSE)$selectionRate
     }))
     return(setCutoff(object, quantile(parll, 0.999)))
   }

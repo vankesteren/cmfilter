@@ -8,46 +8,82 @@ cmfslow <- function(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter,
   M <- as.data.frame(scale(M))
   y <- scale(y)
   
-  # Register parallel cluster
-  clus <- parallel::makeCluster(nCores)
-  on.exit(parallel::stopCluster(clus))
-  
-  # initialise the cluster with the current environment
-  parallel::clusterEvalQ(clus, {library(cmfilter)})
-  vars <- ls()
-  parallel::clusterExport(clus, vars[vars != "clus"], parent.frame())
-  
-  # run the apply function
-  out <- pbapply::pblapply(X = 1:nStarts, FUN = function(start) {
+  if (nCores > 1) {
     
-    # initialise the variables to be used
-    meds <- names(M)
-    len <- length(meds)
-    mselSum <- msel <- integer(len)
-    medsamp <- 1:len
-    names(mselSum) <- names(msel) <- meds
-    mselLags <- matrix(rep(1L, len*(stableLag + 1)),
-                       ncol = stableLag + 1)
+    # Register parallel cluster
+    clus <- parallel::makeCluster(nCores)
+    on.exit(parallel::stopCluster(clus))
     
-    # init with half the available degrees of freedom or half the mediators
-    msel[1:len] <- generateStart(len, min(floor(nrow(M)/2), floor(len/2)))
+    # initialise the cluster with the current environment
+    parallel::clusterEvalQ(clus, {library(cmfilter)})
+    vars <- ls()
+    parallel::clusterExport(clus, vars[vars != "clus"], parent.frame())
     
-    # select a random number of variables to consider
-    # see James, Witten, Hastie & Tibshirani ISLR (p. 319)
-    sub <- ceiling(sqrt(len))
-    
-    for (i in 1:maxIter) {
-      medsamp <- sample(1:len, sub)
-      msel <- cmfStep(x, M, y, decisionFunction, msel, medsamp, ...)
+    out <- pbapply::pblapply(X = 1:nStarts, FUN = function(start) {
       
-      # Check for convergence at lags
-      mselLags <- cbind(mselLags[,-1], msel)
-      converged <- all(rowSums(mselLags) %% (stableLag + 1) == 0) # Thanks Oisin!
-      if (converged) break
-    }
+      # initialise the variables to be used
+      meds <- names(M)
+      len <- length(meds)
+      mselSum <- msel <- integer(len)
+      medsamp <- 1:len
+      names(mselSum) <- names(msel) <- meds
+      mselLags <- matrix(rep(1L, len*(stableLag + 1)),
+                         ncol = stableLag + 1)
+      
+      # init with half the available degrees of freedom or half the mediators
+      msel[1:len] <- generateStart(len, min(floor(nrow(M)/2), floor(len/2)))
+      
+      # select a random number of variables to consider
+      # see James, Witten, Hastie & Tibshirani ISLR (p. 319)
+      sub <- ceiling(sqrt(len))
+      
+      for (i in 1:maxIter) {
+        medsamp <- sample(1:len, sub)
+        msel <- cmfStep(x, M, y, decisionFunction, msel, medsamp, ...)
+        
+        # Check for convergence at lags
+        mselLags <- cbind(mselLags[,-1], msel)
+        converged <- all(rowSums(mselLags) %% (stableLag + 1) == 0) # Thanks Oisin!
+        if (converged) break
+      }
+      
+      return(msel)
+    }, cl = clus)
     
-    return(msel)
-  }, cl = clus)
+  } else {
+    
+    out <- pbapply::pblapply(X = 1:nStarts, FUN = function(start) {
+      
+      # initialise the variables to be used
+      meds <- names(M)
+      len <- length(meds)
+      mselSum <- msel <- integer(len)
+      medsamp <- 1:len
+      names(mselSum) <- names(msel) <- meds
+      mselLags <- matrix(rep(1L, len*(stableLag + 1)),
+                         ncol = stableLag + 1)
+      
+      # init with half the available degrees of freedom or half the mediators
+      msel[1:len] <- generateStart(len, min(floor(nrow(M)/2), floor(len/2)))
+      
+      # select a random number of variables to consider
+      # see James, Witten, Hastie & Tibshirani ISLR (p. 319)
+      sub <- ceiling(sqrt(len))
+      
+      for (i in 1:maxIter) {
+        medsamp <- sample(1:len, sub)
+        msel <- cmfStep(x, M, y, decisionFunction, msel, medsamp, ...)
+        
+        # Check for convergence at lags
+        mselLags <- cbind(mselLags[,-1], msel)
+        converged <- all(rowSums(mselLags) %% (stableLag + 1) == 0) # Thanks Oisin!
+        if (converged) break
+      }
+      
+      return(msel)
+    })
+    
+  }
   
   return(out)
 }
