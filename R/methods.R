@@ -171,6 +171,7 @@ update.cmf <- function(object, nStarts = 100, ...) {
 #' selection rates from which we can determine the cutoff (the 99.9th 
 #' percentile)
 #' 
+#' @importFrom stats quantile
 #' 
 #' @export
 setCutoff <- function(object, cutoff = .5) {
@@ -191,7 +192,7 @@ setCutoff <- function(object, cutoff = .5) {
       p <- ncol(M)
       n <- nrow(M)
     }
-    parll <- as.vector(pbsapply(1:100, function(i) {
+    parll <- as.vector(pbapply::pbsapply(1:100, function(i) {
       cmf(generateMed(n, numeric(p), numeric(p)), 
           decisionFunction = dec, 
           pb = FALSE)$selectionRate
