@@ -192,12 +192,21 @@ setCutoff <- function(object, cutoff = .5) {
       p <- ncol(M)
       n <- nrow(M)
     }
-    parll <- as.vector(pbapply::pbsapply(1:100, function(i) {
+    nIter <- ceiling(1000/p)
+    if (nIter == 1) {
       mockdat <- matrix(rnorm(n*(p+2)), n)
       colnames(mockdat) <- c("x", paste0("M.", 1:p), "y")
       mockdat <- as.data.frame(mockdat)
-      cmf(mockdat, decisionFunction = dec, pb = FALSE)$selectionRate
-    }))
+      parll <- cmf(mockdat, decisionFunction = dec)$selectionRate
+    } else {
+      parll <- as.vector(pbapply::pbsapply(1:nIter, function(i) {
+        mockdat <- matrix(rnorm(n*(p+2)), n)
+        colnames(mockdat) <- c("x", paste0("M.", 1:p), "y")
+        mockdat <- as.data.frame(mockdat)
+        cmf(mockdat, decisionFunction = dec, pb = FALSE)$selectionRate
+      }))
+    }
+    
     return(setCutoff(object, quantile(parll, 0.999)))
   }
   if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
