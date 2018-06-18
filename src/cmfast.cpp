@@ -35,11 +35,12 @@
 
 // Generate random start
 arma::uvec generateStart(int n, int p) {
-  int nones = (n <= p / 2) ? n - 1 : p / 2;
+  int nones = (sqrt(n) <= p / 2) ? sqrt(n) : p / 2;
   arma::uvec one = arma::uvec(nones, arma::fill::ones);
   arma::uvec zer = arma::uvec(p - nones, arma::fill::zeros);
   return arma::shuffle(arma::join_cols(one, zer));
 }
+
 
 // Column filter function
 arma::mat getcols(arma::mat & M, arma::uvec & idx) {
@@ -56,7 +57,9 @@ arma::mat getcols(arma::mat & M, arma::uvec & idx) {
   return A;
 }
 
+
 // fast implementation of sobel test
+// [[Rcpp::export]]
 double sobel(arma::vec & x, arma::vec & m, arma::vec & y) {
   // get alpha and its variance
   int n           = x.n_elem;
@@ -70,11 +73,12 @@ double sobel(arma::vec & x, arma::vec & m, arma::vec & y) {
   mm.col(0)       = x;
   mm.col(1)       = m;
   arma::mat cpmm  = mm.t() * mm;
+  arma::vec cpmy  = mm.t() * y;
   
   // get beta and its variance
-  arma::vec beta  = arma::solve(cpmm, mm.t() * y);
+  arma::vec beta  = arma::solve(cpmm, cpmy);
   arma::vec res_y = y - mm * beta;
-  arma::mat var_b = dot(res_y, res_y) / (n-1) * arma::inv(cpmm);
+  arma::mat var_b = dot(res_y, res_y) / (n-1) * cpmm.i();
   
   // return the z-score
   double stat = alpha * beta(1);
@@ -101,7 +105,7 @@ double csteps(arma::vec & x, arma::vec & m, arma::vec & y) {
   // get beta and its variance and t score
   arma::vec beta  = arma::solve(cpmm, mm.t() * y);
   arma::vec res_y = y - mm * beta;
-  arma::mat var_b = dot(res_y, res_y) / (n-1) * arma::inv(cpmm);
+  arma::mat var_b = dot(res_y, res_y) / (n-1) * cpmm.i();
   double tb       = fabs(beta(1) / sqrt(var_b(1, 1)));
   
   // return min(a, b)
@@ -109,30 +113,37 @@ double csteps(arma::vec & x, arma::vec & m, arma::vec & y) {
 }
 
 // fast implementation of cmf step
-arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y, 
-                    arma::uvec & f, arma::uvec & s, 
+arma::uvec cmfastep(arma::vec & x, arma::mat M, arma::vec & y, 
+                    arma::uvec f, arma::uvec & s, 
                     double & critval, int & decfun) {
   // Rcpp::Rcout << 1 << std::endl;
-  int n = x.n_elem;                               // sample size
-  int sl = s.n_elem;                              // n Ms to consider
-  arma::vec m;                                    // init the mediator
-  arma::vec r_x;                                  // init residual of x
-  arma::vec r_y;                                  // init residual of y
+  int n = x.n_elem;                                // sample size
+  int sl = s.n_elem;                               // n Ms to consider
+  arma::vec m;                                     // init the mediator
+  arma::vec r_x;                                   // init residual of x
+  arma::vec r_y;                                   // init residual of y
 
   for (int i = 0; i < sl; i++) {
-    int idx = s(i);                               // idx of M to consider
-    int curcsum =  arma::sum(f) - f(idx);         // n remaining selected M
-    if (curcsum >= n-1) continue;                 // escape if p > n
-    m = M.col(idx);                               // assign M[, idx]
-    if (curcsum == 0) {                           // no remaining Ms selected
+    int idx = s(i);                                // idx of M to consider
+    int curcsum = arma::sum(f) - f(idx);           // n remaining selected M
+    if (curcsum >= n-2) {
+      Rcpp::Rcout << "c";
+      break;
+    }                  // escape if p > n
+    m = M.col(idx);                                // assign M[, idx]
+    if (curcsum == 0) {                            // no remaining Ms selected
       r_x = x;
       r_y = y;
     } else {
-      arma::uvec fcopy = f;                       // create copy of filter
-      fcopy(idx) = 0;                             // without current M
-      arma::mat Mx = getcols(M, fcopy);           // model matrix
-      r_x = x - Mx * arma::solve(Mx, x);          // residual of x
-      r_y = y - Mx * arma::solve(Mx, y);          // residual of y
+      arma::uvec fcopy = f;                        // create copy of filter
+      fcopy(idx)       = 0;                        // without current M
+      
+      arma::mat Mx   = getcols(M, fcopy);          // model matrix
+      arma::mat MtM  = Mx.t() * Mx;                // crossprod
+      arma::mat icp  = arma::inv_sympd(MtM);       // inverse crossprod matrix
+      arma::mat H    = Mx * icp * Mx.t();          // hat matrix
+      r_x            = x - H * x;                  // residual of x
+      r_y            = y - H * y;                  // residual of y
     }
     
     // test for 
@@ -177,7 +188,7 @@ arma::vec arma_cmf(arma::vec x, arma::mat M, arma::vec y,
   Progress prog(nStarts, pb);
   
   // start multithreading
-  #pragma omp parallel for schedule(dynamic)
+#pragma omp parallel for schedule(dynamic)
   for (int start = 0; start < nStarts; start++) {
     // generate random start for the filter vector
     arma::uvec f = generateStart(n, p);
@@ -223,7 +234,6 @@ arma::vec arma_cmf(arma::vec x, arma::mat M, arma::vec y,
   // reduce to empirical selection probabilities and return
   return arma::conv_to<arma::vec>::from(arma::sum(result, 1)) / nStarts;
 }
-
 
 // Check if openMP is available
 // [[Rcpp::export]]

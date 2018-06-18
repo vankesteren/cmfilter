@@ -29,7 +29,7 @@ plot.cmf <- function(x, removeZeros = FALSE,
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
   barplot(sp, las = las, ylim = ylim, space = space,
-          border = ,
+          border = border,
           col = ifelse(sp < co, "grey", "#888888"), ...)
   if (line) abline(h = co, lty = 3)
 }

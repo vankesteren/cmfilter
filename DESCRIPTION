@@ -1,7 +1,7 @@
 Package: cmfilter
 Type: Package
 Title: Coordinate-wise Mediation Filter
-Version: 0.2.0
+Version: 0.2.1
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Description: This package implements simultaneous discovery of multiple 
