@@ -10,5 +10,3 @@ matrix:
       r: devel
     - os: osx 
       r: release
-    - os: osx
-      r: devel
