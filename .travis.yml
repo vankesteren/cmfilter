@@ -1,12 +1,6 @@
 language: r
 cache: packages
-r:
-  - release
-  - devel
-
-language: r
 latex: false
-fortran: false
 
 matrix:
   include:
@@ -14,7 +8,7 @@ matrix:
       r: release
     - os: linux
       r: devel
-    - os: osx
+    - os: osx 
       r: release
     - os: osx
       r: devel
