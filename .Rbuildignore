@@ -3,3 +3,5 @@
 LICENSE
 .travis.yml
 ^appveyor\.yml$
+^cmfilter\.png$
+
