@@ -1,12 +1,17 @@
-<img src="cmfilter.png" width="30%" style="display:block;margin:0 auto"></img>
-<div style="display:block;margin:0 auto; text-align:center">
-[![Build Status](https://travis-ci.org/vankesteren/cmfilter.svg?branch=master)](https://travis-ci.org/vankesteren/cmfilter)
-[![Build status](https://ci.appveyor.com/api/projects/status/f0hbgmqlgkqhdstj?svg=true)](https://ci.appveyor.com/project/vankesteren/cmfilter)
-</div><br/>
+<p align="center">
+  <img src="cmfilter.png" width="300px"></img>
+  <br/>
+  <span>
+    <a href="https://travis-ci.org/vankesteren/cmfilter"><img src="https://travis-ci.org/vankesteren/cmfilter.svg?branch=master"></img></a>
+    <a href="https://ci.appveyor.com/project/vankesteren/cmfilter"><img src="https://ci.appveyor.com/api/projects/status/f0hbgmqlgkqhdstj?svg=true"></img></a>
+  </span>
+  <h5 align="center">Coordinate-wise mediation filter</h5>
+</p>
+<br>
 
-## Coordinate-wise mediation filter
 
-Package `cmfilter` is work in progress. Check back later for more info.
+<h6 align="center"> Package `cmfilter` is work in progress. Check back later for more info. </h6>
+<br/>
 
 ## Installation
 
