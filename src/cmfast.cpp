@@ -187,7 +187,9 @@ arma::vec arma_cmf(arma::vec x, arma::mat M, arma::vec y,
   Progress prog(nStarts, pb);
   
   // start multithreading
+#ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
+#endif
   for (int start = 0; start < nStarts; start++) {
     // generate random start for the filter vector
     arma::uvec f = generateStart(n, p);
