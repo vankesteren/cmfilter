@@ -28,7 +28,7 @@
 // [[Rcpp::plugins(openmp)]] 
 #include <RcppArmadillo.h>
 #ifdef _OPENMP
-# include <omp.h>
+#include <omp.h>
 #endif
 #include <progress.hpp>
 #include <progress_bar.hpp>
@@ -59,7 +59,6 @@ arma::mat getcols(arma::mat & M, arma::uvec & idx) {
 
 
 // fast implementation of sobel test
-// [[Rcpp::export]]
 double sobel(arma::vec & x, arma::vec & m, arma::vec & y) {
   // get alpha and its variance
   int n           = x.n_elem;
