@@ -112,7 +112,7 @@ double csteps(arma::vec & x, arma::vec & m, arma::vec & y) {
 }
 
 // fast implementation of cmf step
-arma::uvec cmfastep(arma::vec & x, arma::mat M, arma::vec & y, 
+arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y, 
                     arma::uvec f, arma::uvec & s, 
                     double & critval, int & decfun) {
   // Rcpp::Rcout << 1 << std::endl;
@@ -166,10 +166,10 @@ arma::uvec cmfastep(arma::vec & x, arma::mat M, arma::vec & y,
 
 // fast implementation of cmf
 // [[Rcpp::export]]
-arma::vec arma_cmf(arma::vec x, arma::mat M, arma::vec y, 
-                   int maxIter, int stableLag, 
-                   double critval, int decfun,
-                   int nCores, int nStarts, bool pb) {
+arma::vec arma_cmf(arma::vec & x, arma::mat & M, arma::vec & y, 
+                   int & maxIter, int & stableLag, 
+                   double & critval, int & decfun,
+                   int & nCores, int & nStarts, bool & pb) {
   // set the number of cores to use
 #ifdef _OPENMP
   omp_set_num_threads(nCores);
