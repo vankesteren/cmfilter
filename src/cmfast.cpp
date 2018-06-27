@@ -75,9 +75,10 @@ double sobel(arma::vec & x, arma::vec & m, arma::vec & y) {
   arma::vec cpmy  = mm.t() * y;
   
   // get beta and its variance
-  arma::vec beta  = arma::solve(cpmm, cpmy);
+  arma::mat cpmmi = cpmm.i();
+  arma::vec beta  = cpmmi * cpmy;
   arma::vec res_y = y - mm * beta;
-  arma::mat var_b = dot(res_y, res_y) / (n-1) * cpmm.i();
+  arma::mat var_b = dot(res_y, res_y) / (n - 2) * cpmmi;
   
   // return the z-score
   double stat = alpha * beta(1);
