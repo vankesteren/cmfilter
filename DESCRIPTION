@@ -1,7 +1,8 @@
 Package: cmfilter
 Type: Package
 Title: Coordinate-wise Mediation Filter
-Version: 0.2.1
+Version: 0.3.0
+Date: 2018-08-09
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Description: This package implements simultaneous discovery of multiple 
@@ -10,7 +11,7 @@ Description: This package implements simultaneous discovery of multiple
 License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Imports: Matrix,
     sparseMVN,
     expm,
