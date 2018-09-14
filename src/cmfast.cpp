@@ -120,7 +120,6 @@ arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y,
   int n = x.n_elem;                                // sample size
   int sl = s.n_elem;                               // n Ms to consider
   arma::vec m;                                     // init the mediator
-  arma::vec r_m;                                   // init residual of m
   arma::vec r_x;                                   // init residual of x
   arma::vec r_y;                                   // init residual of y
 
@@ -135,7 +134,6 @@ arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y,
     if (curcsum == 0) {                            // no remaining Ms selected
       r_x = x;
       r_y = y;
-      r_m = m;
     } else {
       arma::uvec fcopy = f;                        // create copy of filter
       fcopy(idx)       = 0;                        // without current M
@@ -144,7 +142,6 @@ arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y,
       arma::mat MtM  = Mx.t() * Mx;                // crossprod
       arma::mat icp  = arma::inv_sympd(MtM);       // inverse crossprod matrix
       arma::mat H    = Mx * icp * Mx.t();          // hat matrix
-      r_m            = m - H * m;                  // residual of m
       r_x            = x - H * x;                  // residual of x
       r_y            = y - H * y;                  // residual of y
     }
@@ -152,9 +149,9 @@ arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y,
     // test for 
     bool isMediator;
     if (decfun == 1) {
-      isMediator = fabs(sobel(r_x, r_m, r_y)) > critval; // perform sobel test
+      isMediator = fabs(sobel(r_x, m, r_y)) > critval; // perform sobel test
     } else {
-      isMediator = csteps(r_x, r_m, r_y) > critval;      // causal steps test
+      isMediator = csteps(r_x, m, r_y) > critval;      // causal steps test
     }
     
     if (isMediator) {
