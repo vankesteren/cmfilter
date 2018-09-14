@@ -18,10 +18,10 @@
 ## Description
 An `R` package for simultaneous discovery of multiple mediators in an _x → M → y_ system using Coordinate-wise Mediation Filtering.
 
-| `high-dimensional data` | `feature selection` | `structural equation modeling` | `mediation analysis` | 
+Keywords: `high-dimensional data`, `feature selection`, `structural equation modeling`, `mediation analysis`
 
 ## Installation
-
+The package is not yet available on `CRAN`. To install the package directly from this repository, install the `devtools` package, make sure you have [`R Build Tools` (Windows)](https://cran.r-project.org/bin/windows/Rtools/) installed, and then run the following command:
 ```r
 devtools::install_github("vankesteren/cmfilter")
 ```
@@ -34,3 +34,6 @@ To install the development version of `cmfilter`, run
 ```r
 devtools::install_github("vankesteren/cmfilter@devel")
 ```
+
+## Usage
+The built-in documentation (run `help(cmf)`) gives information on how to use this package. More extensive documentation is under development.
