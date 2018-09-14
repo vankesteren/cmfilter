@@ -11,11 +11,11 @@
 <br/>
 
 
-<p align="center" style="margin:0 20%;font-style:italic">Simultaneous discovery of multiple mediators in an <code>x → M → y</code> system using Coordinate-wise Mediation Filtering.</p>
+_Simultaneous discovery of multiple mediators in an <code>x → M → y</code> system using Coordinate-wise Mediation Filtering._
 
 <br/>
 
-<p align="center" style="color:grey;font-weight:bold;"> Package <code>cmfilter</code> is work in progress. Check back later for more info. </p>
+<h6 align="center"> Package <code>cmfilter</code> is work in progress. Check back later for more info. </h6>
 <br/>
 
 ## Installation
