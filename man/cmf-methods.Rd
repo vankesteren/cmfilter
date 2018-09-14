@@ -8,10 +8,10 @@
 \alias{print.cmf}
 \title{Methods for cmf results lists}
 \usage{
-\method{plot}{cmf}(x, removeZeros = FALSE, line = TRUE, las = 2,
-  ylim = c(0, 1), space = 0, border = "dark grey", ...)
+\method{plot}{cmf}(x, select, line = TRUE, labelSelected = TRUE,
+  defaultColour = "#00008b", highlightColour = "#e2bd36", ...)
 
-\method{screeplot}{cmf}(x, topn, border = NA, space = 0, ...)
+\method{screeplot}{cmf}(x, topn, ...)
 
 \method{summary}{cmf}(object, ...)
 
@@ -20,17 +20,16 @@
 \arguments{
 \item{x}{cmf object}
 
-\item{removeZeros}{whether to remove the unselected mediators from the plot}
+\item{select}{optional selection vector of variables to show}
 
 \item{line}{whether to show a line at the chosen cutoff}
 
-\item{las}{las argument to barplot}
+\item{labelSelected}{whether to label the selected mediators in the plot, not
+used when fewer than 20 bars are shown.}
 
-\item{ylim}{y limits argument to barplot}
+\item{defaultColour}{the colour for the bars lower than the cutoff}
 
-\item{space}{the amount of space between the bars (default 0)}
-
-\item{border}{the colour of the border around the bars}
+\item{highlightColour}{the colour for the bars of the selected mediators}
 
 \item{...}{other arguments passed to barplot and summary}
 

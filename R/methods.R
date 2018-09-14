@@ -4,34 +4,58 @@
 #'
 #' @param x cmf object
 #' @param object cmf object
-#' @param removeZeros whether to remove the unselected mediators from the plot
+#' @param select optional selection vector of variables to show
 #' @param line whether to show a line at the chosen cutoff
-#' @param las las argument to barplot
-#' @param ylim y limits argument to barplot
+#' @param labelSelected whether to label the selected mediators in the plot, not
+#' used when fewer than 20 bars are shown.
+#' @param defaultColour the colour for the bars lower than the cutoff
+#' @param highlightColour the colour for the bars of the selected mediators
 #' @param topn only show the top n mediators
-#' @param border the colour of the border around the bars
-#' @param space the amount of space between the bars (default 0)
 #' @param ... other arguments passed to barplot and summary
 #'
 #' @seealso \code{\link{cmf}}
 #'
-#' @importFrom graphics barplot abline
+#' @importFrom graphics barplot abline text
 #'
 #' @name cmf-methods
 #' @method plot cmf
 #'
 #' @export
-plot.cmf <- function(x, removeZeros = FALSE,
-                     line = TRUE, las = 2, ylim = c(0, 1),
-                     space = 0, border = "dark grey", ...) {
-  sp <- x$selectionRate
-  if (removeZeros) sp <- sp[sp != 0]
+plot.cmf <- function(x, select, line = TRUE, labelSelected = TRUE, 
+                     defaultColour = "#00008b", highlightColour = "#e2bd36", 
+                     ...) {
+  
+  # Compile a list of arguments
+  args <- match.call(expand.dots = FALSE)$`...`
+  if (is.null(args))        args        <- list()
+  if (is.null(args$las))    args$las    <- 2
+  if (is.null(args$ylim))   args$ylim   <- c(0, 1)
+  if (is.null(args$space))  args$space  <- 0
+  if (is.null(args$border)) args$border <- NA
+  
+  if (missing(select)) select <- seq_along(x$selectionRate)
+  sp <- x$selectionRate[select]
+  
   co <- as.list(x$call)$cutoff
   if (is.null(co)) co <- 0.5
-  barplot(sp, las = las, ylim = ylim, space = space,
-          border = border,
-          col = ifelse(sp < co, "grey", "#888888"), ...)
+  
+  if (is.null(args$names.arg)) {
+    if (length(select) < 20) {
+      args$names.arg <- names(sp) 
+    } else {
+      args$names.arg <- rep("", length(select))
+    }
+  }
+  
+  args$height <- sp
+  args$col    <- ifelse(sp < co, defaultColour, highlightColour)
+  
+  do.call(barplot, args)
+  
   if (line) abline(h = co, lty = 3)
+  if (length(select) >= 20 && labelSelected)
+    text(x = which(sp > co) - .5, y = sp[sp > co], labels = names(sp[sp > co]), 
+         pos = 3)
 }
 
 #' @rdname cmf-methods
@@ -41,11 +65,22 @@ plot.cmf <- function(x, removeZeros = FALSE,
 #'
 #' @method screeplot cmf
 #' @export
-screeplot.cmf <- function(x, topn, border = NA, space = 0, ...) {
+screeplot.cmf <- function(x, topn, ...) {
+  # Compile args for barplot call
+  args <- match.call(expand.dots = FALSE)$`...`
+  if (is.null(args))        args        <- list()
+  if (is.null(args$border)) args$border <- NA
+  if (is.null(args$space))  args$space  <- 0
+  if (is.null(args$col))    args$col    <- "#499293"
+  
   if (missing(topn)) topn <- length(x$selectionRate)
-  barplot(x$selectionRate[order(x$selectionRate, decreasing = TRUE)][1:topn],
-          border = border, space = 0, xaxt = "n", yaxt = "n", ...)
-  axis(2, pretty(x$selectionRate, n = 20), las = 1)
+  sr <- x$selectionRate
+  args$height <- sr[order(sr, decreasing = TRUE)][1:topn]
+  args$xaxt   <- "n"
+  args$yaxt   <- "n"
+  
+  do.call(barplot, args)
+  axis(2, pretty(sr, n = 20), las = 1)
 }
 
 

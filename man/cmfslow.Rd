@@ -4,8 +4,8 @@
 \alias{cmfslow}
 \title{R-based Coordinate-wise Mediation Filter backend}
 \usage{
-cmfslow(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter, stableLag,
-  ...)
+cmfslow(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter,
+  stableLag, ...)
 }
 \description{
 R-based Coordinate-wise Mediation Filter backend
