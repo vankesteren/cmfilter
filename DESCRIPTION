@@ -1,13 +1,12 @@
 Package: cmfilter
 Type: Package
-Title: Coordinate-wise Mediation Filter
-Version: 0.3.0
-Date: 2018-08-09
+Title: Coordinate-Wise Mediation Filter
+Version: 0.3.2
+Date: 2018-09-14
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
-Description: This package implements simultaneous discovery of multiple 
-  mediators in an x -> M -> y system using arbitrary decision functions through 
-  Coordinate-wise Mediation Filtering.
+Description: Simultaneous discovery of multiple mediators in an x -> M -> y 
+  system using Coordinate-wise Mediation Filtering.
 License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true

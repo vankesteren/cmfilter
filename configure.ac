@@ -60,5 +60,3 @@ dnl this the meat of R's m4/openmp.m4
 
 AC_SUBST(OPENMP_CXXFLAGS)
 AC_OUTPUT(src/Makevars)
-
-

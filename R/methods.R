@@ -50,7 +50,7 @@ plot.cmf <- function(x, select, line = TRUE, labelSelected = TRUE,
   args$height <- sp
   args$col    <- ifelse(sp < co, defaultColour, highlightColour)
   
-  do.call(barplot, args)
+  do.call(barplot, as.list(args))
   
   if (line) abline(h = co, lty = 3)
   if (length(select) >= 20 && labelSelected)
@@ -79,8 +79,11 @@ screeplot.cmf <- function(x, topn, ...) {
   args$xaxt   <- "n"
   args$yaxt   <- "n"
   
-  do.call(barplot, args)
-  axis(2, pretty(sr, n = 20), las = 1)
+  do.call(barplot, as.list(args))
+  if (!is.null(args$cex.axis))
+    axis(2, pretty(sr, n = 20), las = 1, cex.axis = args$cex.axis)
+  else
+    axis(2, pretty(sr, n = 20), las = 1, cex.axis = args$cex.axis)
 }
 
 

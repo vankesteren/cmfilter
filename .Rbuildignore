@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-LICENSE
-.travis.yml
+^LICENSE$
+^.travis.yml$
 ^appveyor\.yml$
 ^cmfilter\.png$
-
+^README.md$
