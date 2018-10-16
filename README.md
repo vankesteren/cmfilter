@@ -10,11 +10,6 @@
 </p>
 <br/>
 
-<h6 align="center"> Package <code>cmfilter</code> is work in progress. Check back later for more info. </h6>
-<br/>
-
-
-
 ## Description
 An `R` package for simultaneous discovery of multiple mediators in an _x → M → y_ system using Coordinate-wise Mediation Filtering.
 
