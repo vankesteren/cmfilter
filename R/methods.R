@@ -179,9 +179,10 @@ update.cmf <- function(object, nStarts = 100, ...) {
   }
   
   object$selectionRate <-
-    (object$selectionRate*oldn + newres$selectionRate*nStarts) / (oldn+nStarts)
+    (object$selectionRate*oldn + newres$selectionRate*nStarts) / 
+    (oldn + nStarts)
   
-  object$call$nStarts <- oldn+nStarts
+  object$call$nStarts <- oldn + nStarts
   
   object$selection <- object$selectionRate > co
   
@@ -268,14 +269,16 @@ setCutoff <- function(object, cutoff = .5) {
 #' @method + cmf
 #' @export
 `+.cmf` <- function(x, y) {
-  if (is.null(x$call$nStarts)) x_n <- 1e3 else x_n <- x$call$nStarts
-  if (is.null(y$call$nStarts)) y_n <- 1e3 else y_n <- y$call$nStarts
+  # Find the number of iterations of each of the objects
+  if (is.null(x$call$nStarts)) xn <- 1e3 else xn <- x$call$nStarts
+  if (is.null(y$call$nStarts)) yn <- 1e3 else yn <- y$call$nStarts
   
+  # New selection rate is weighted average of selection rates.
   cmf_out <- x
-  cmf_out$call$nStarts  <- x_n + y_n
-  cmf_out$selectionRate <- 
-    (x_n * x$selectionRate + y_n * y$selectionRate) / (x_n + y_n)
+  cmf_out$call$nStarts  <- tot <- xn + yn
+  cmf_out$selectionRate <- (xn * x$selectionRate + yn * y$selectionRate) / tot
   
+  # Recalculate cutoff and return
   if (is.null(x$call$cutoff)) co <- .5 else co <- x$call$cutoff
   setCutoff(cmf_out, co)
 }
