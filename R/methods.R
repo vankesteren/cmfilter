@@ -53,7 +53,7 @@ plot.cmf <- function(x, select, line = TRUE, labelSelected = TRUE,
   do.call(barplot, as.list(args))
   
   if (line) abline(h = co, lty = 3)
-  if (length(select) >= 20 && labelSelected)
+  if (length(select) >= 20 && labelSelected && length(sp[sp > co] > 0))
     text(x = which(sp > co) - .5, y = sp[sp > co], labels = names(sp[sp > co]), 
          pos = 3)
 }

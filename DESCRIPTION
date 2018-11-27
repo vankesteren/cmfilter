@@ -1,7 +1,7 @@
 Package: cmfilter
 Type: Package
 Title: Coordinate-Wise Mediation Filter
-Version: 0.3.3
+Version: 0.4.0
 Date: 2018-09-14
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
@@ -19,3 +19,4 @@ Imports: Matrix,
     parallel,
     Rcpp (>= 0.12.13)
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress
+Suggests: testthat
