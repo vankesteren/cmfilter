@@ -83,6 +83,16 @@ test_that("Plot method works", {
   dev.off()
   expect_gt(file.size(fn), 318)
 })
+test_that("Cutoff setting works", {
+  res <- setCutoff(res, cutoff = 0.1)
+  expect_equal(res$call$cutoff, .1)
+})
+test_that("Adding method works", {
+  res1 <- res
+  res2 <- res
+  res3 <- res1 + res2
+  expect_equal(res3$selectionRate, (res1$selectionRate + res2$selectionRate)/2)
+})
 
 
 context("CPP backend Causal Steps")
@@ -96,7 +106,7 @@ test_that("Single-core csteps cmf works", {
   )
   expect(inherits(res, "cmf"), "Result is not of class CMF")
 })
-test_that("Multi-core prodcoef cmf works", {
+test_that("Multi-core csteps cmf works", {
   res <<- cmf(
     d, 
     nStarts = 400,
@@ -130,4 +140,14 @@ test_that("Plot method works", {
   plot(res)
   dev.off()
   expect_gt(file.size(fn), 318)
+})
+test_that("Cutoff setting works", {
+  res <- setCutoff(res, cutoff = 0.1)
+  expect_equal(res$call$cutoff, .1)
+})
+test_that("Adding method works", {
+  res1 <- res
+  res2 <- res
+  res3 <- res1 + res2
+  expect_equal(res3$selectionRate, (res1$selectionRate + res2$selectionRate)/2)
 })
