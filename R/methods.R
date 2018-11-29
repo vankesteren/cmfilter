@@ -53,7 +53,7 @@ plot.cmf <- function(x, select, line = TRUE, labelSelected = TRUE,
   do.call(barplot, as.list(args))
   
   if (line) abline(h = co, lty = 3)
-  if (length(select) >= 20 && labelSelected)
+  if (length(select) >= 20 && labelSelected && length(sp[sp > co] > 0))
     text(x = which(sp > co) - .5, y = sp[sp > co], labels = names(sp[sp > co]), 
          pos = 3)
 }
@@ -179,9 +179,10 @@ update.cmf <- function(object, nStarts = 100, ...) {
   }
   
   object$selectionRate <-
-    (object$selectionRate*oldn + newres$selectionRate*nStarts) / (oldn+nStarts)
+    (object$selectionRate*oldn + newres$selectionRate*nStarts) / 
+    (oldn + nStarts)
   
-  object$call$nStarts <- oldn+nStarts
+  object$call$nStarts <- oldn + nStarts
   
   object$selection <- object$selectionRate > co
   
@@ -232,13 +233,13 @@ setCutoff <- function(object, cutoff = .5) {
     }
     nIter <- ceiling(1000/p)
     if (nIter == 1) {
-      mockdat <- matrix(rnorm(n*(p+2)), n)
+      mockdat <- matrix(rnorm(n*(p + 2)), n)
       colnames(mockdat) <- c("x", paste0("M.", 1:p), "y")
       mockdat <- as.data.frame(mockdat)
       parll <- cmf(mockdat, decisionFunction = dec)$selectionRate
     } else {
       parll <- as.vector(pbapply::pbsapply(1:nIter, function(i) {
-        mockdat <- matrix(rnorm(n*(p+2)), n)
+        mockdat <- matrix(rnorm(n*(p + 2)), n)
         colnames(mockdat) <- c("x", paste0("M.", 1:p), "y")
         mockdat <- as.data.frame(mockdat)
         cmf(mockdat, decisionFunction = dec, pb = FALSE)$selectionRate
@@ -254,3 +255,30 @@ setCutoff <- function(object, cutoff = .5) {
   object
 }
 
+#' Combine the results of multiple cmf objects into one
+#' 
+#' This function combines two cmf objects and returns one cmf object with the
+#' combined results. This helps with combining results done over multiple runs,
+#' for example in high-performance computing.
+#' 
+#' @param x a cmf object
+#' @param y a cmf object
+#' 
+#' @return a cmf object with combined results
+#'  
+#' @method + cmf
+#' @export
+`+.cmf` <- function(x, y) {
+  # Find the number of iterations of each of the objects
+  if (is.null(x$call$nStarts)) xn <- 1e3 else xn <- x$call$nStarts
+  if (is.null(y$call$nStarts)) yn <- 1e3 else yn <- y$call$nStarts
+  
+  # New selection rate is weighted average of selection rates.
+  cmf_out <- x
+  cmf_out$call$nStarts  <- tot <- xn + yn
+  cmf_out$selectionRate <- (xn * x$selectionRate + yn * y$selectionRate) / tot
+  
+  # Recalculate cutoff and return
+  if (is.null(x$call$cutoff)) co <- .5 else co <- x$call$cutoff
+  setCutoff(cmf_out, co)
+}
