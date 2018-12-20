@@ -81,9 +81,9 @@ screeplot.cmf <- function(x, topn, ...) {
   
   do.call(barplot, as.list(args))
   if (!is.null(args$cex.axis))
-    axis(2, pretty(sr, n = 20), las = 1, cex.axis = args$cex.axis)
+    axis(2, pretty(c(0, sr), n = 20), las = 1, cex.axis = args$cex.axis)
   else
-    axis(2, pretty(sr, n = 20), las = 1, cex.axis = args$cex.axis)
+    axis(2, pretty(c(0, sr), n = 20), las = 1, cex.axis = args$cex.axis)
 }
 
 

@@ -104,6 +104,11 @@ cmf <- function(x, M, y, decisionFunction = "prodcoef",
   } else {
     stop("Input valid decisionFunction.")
   }
+  
+  
+  # evaluate some call arguments
+  res$call$nStarts <- nStarts
+  res$call$nCores  <- nCores
 
   return(structure(res, class = "cmf"))
 }
