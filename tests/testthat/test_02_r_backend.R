@@ -16,7 +16,7 @@ test_that("Multi-core prodcoef cmf works", {
       d, 
       nStarts = 100,
       decisionFunction = cmfilter:::prodCoef,
-      nCores = parallel::detectCores()
+      nCores = 2
     )
   )
   expect(inherits(res, "cmf"), "Result is not of class CMF")
@@ -76,7 +76,7 @@ test_that("Multi-core partcor cmf works", {
       d, 
       nStarts = 100,
       decisionFunction = cmfilter:::corMinusPartCor,
-      nCores = parallel::detectCores()
+      nCores = 2
     )
   )
   expect(inherits(res, "cmf"), "Result is not of class CMF")
@@ -148,7 +148,7 @@ test_that("Multi-core custom cmf works", {
       d, 
       nStarts = 100,
       decisionFunction = selFun,
-      nCores = parallel::detectCores(),
+      nCores = 2,
       crit = 3.84
     )
   )

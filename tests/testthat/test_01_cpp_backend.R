@@ -53,7 +53,7 @@ test_that("Multi-core prodcoef cmf works", {
     d, 
     nStarts = 400,
     decisionFunction = "prodcoef",
-    nCores = parallel::detectCores(),
+    nCores = 2,
     pb = FALSE
   )
   expect(inherits(res, "cmf"), "Result is not of class CMF")
@@ -111,7 +111,7 @@ test_that("Multi-core csteps cmf works", {
     d, 
     nStarts = 400,
     decisionFunction = "causalsteps",
-    nCores = parallel::detectCores(),
+    nCores = 2,
     pb = FALSE
   )
   expect(inherits(res, "cmf"), "Result is not of class CMF")
