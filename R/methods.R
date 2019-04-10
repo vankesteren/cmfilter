@@ -12,6 +12,15 @@
 #' @param highlightColour the colour for the bars of the selected mediators
 #' @param topn only show the top n mediators
 #' @param ... other arguments passed to barplot and summary
+#' 
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' res <- cmf(dat)
+#' # screeplot of the result
+#' screeplot(res)
+#' # manhattan style plot the result
+#' plot(res)
+#' 
 #'
 #' @seealso \code{\link{cmf}}
 #'
@@ -152,9 +161,9 @@ print.cmf <- function(x, ...) {
 #'
 #' @examples # generate some data
 #' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
-#' res <- cmf(dat)
+#' res <- cmf(dat, nStarts = 200)
 #' # double the samples
-#' res <- update(res, 1000)
+#' res <- update(res, 500)
 #'
 #' @method update cmf
 #' @export
@@ -202,6 +211,12 @@ update.cmf <- function(object, nStarts = 100, ...) {
 #' @param cutoff either a number between 0 and 1 or "mc" - see details
 #' 
 #' @return a cmf object with updated cutoff value
+#' 
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' res <- cmf(dat)
+#' # set the cutoff for this result at 0.1
+#' setCutoff(res, 0.1)
 #' 
 #' @details The monte carlo determination is based on a procedure in 
 #' PCA and Factor Analysis called "Parallel Analysis". We generate data from
@@ -263,6 +278,14 @@ setCutoff <- function(object, cutoff = .5) {
 #' 
 #' @param x a cmf object
 #' @param y a cmf object
+#' 
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' # create two different cmf objects on this data
+#' res_1 <- cmf(dat, nStarts = 500)
+#' res_2 <- cmf(dat, nStarts = 500)
+#' # Combine the results using the + operator
+#' res_1 + res_2
 #' 
 #' @return a cmf object with combined results
 #'  

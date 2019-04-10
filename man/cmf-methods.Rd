@@ -40,6 +40,17 @@ used when fewer than 20 bars are shown.}
 \description{
 Plotting, summarising, and printing cmf objects
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+res <- cmf(dat)
+# screeplot of the result
+screeplot(res)
+# manhattan style plot the result
+plot(res)
+
+
+}
 \seealso{
 \code{\link{cmf}}
 }

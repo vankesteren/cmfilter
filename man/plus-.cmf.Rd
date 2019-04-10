@@ -19,3 +19,13 @@ This function combines two cmf objects and returns one cmf object with the
 combined results. This helps with combining results done over multiple runs,
 for example in high-performance computing.
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+# create two different cmf objects on this data
+res_1 <- cmf(dat, nStarts = 500)
+res_2 <- cmf(dat, nStarts = 500)
+# Combine the results using the + operator
+res_1 + res_2
+
+}

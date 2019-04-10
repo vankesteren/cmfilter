@@ -19,8 +19,8 @@ This function adds additional samples to the existing results object
 \examples{
 # generate some data
 dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
-res <- cmf(dat)
+res <- cmf(dat, nStarts = 200)
 # double the samples
-res <- update(res, 1000)
+res <- update(res, 500)
 
 }

@@ -60,3 +60,10 @@ may be passed to the function in the \code{...} argument of this function.
  
  - \code{causalsteps} (\code{p.value} = 0.1): Causal steps test min(Ta, Tb)
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+# Run CMF on this data
+cmf(dat)
+
+}

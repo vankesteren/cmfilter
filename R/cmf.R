@@ -31,6 +31,11 @@
 #' 
 #' @param ... parameters passed to decisionFunction
 #'
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' # Run CMF on this data
+#' cmf(dat)
+#'
 #' @details Available decision functions. These functions are implemented in 
 #' C++ to speed up computation. Between brackets the additional parameter that 
 #' may be passed to the function in the \code{...} argument of this function. 

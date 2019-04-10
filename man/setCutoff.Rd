@@ -30,3 +30,11 @@ perform the algorithm 100 times. This creates a distribution of nonmediator
 selection rates from which we can determine the cutoff (the 99.9th 
 percentile)
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+res <- cmf(dat)
+# set the cutoff for this result at 0.1
+setCutoff(res, 0.1)
+
+}

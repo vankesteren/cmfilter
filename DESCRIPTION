@@ -6,8 +6,7 @@ Date: 2019-04-09
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Description: Simultaneous discovery of multiple mediators in an x -> M -> y 
-  system using Coordinate-wise Mediation Filtering, as described in Van Kesteren 
-  and Oberski (2019) <doi:10.1080/10705511.2019.1588124>.
+  system using Coordinate-wise Mediation Filtering.
 License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
