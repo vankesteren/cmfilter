@@ -9,4 +9,10 @@ corMinusPartCor(x, m, y, p.value = 0.1)
 \description{
 the difference in coefficients decision function (correlation - partial cor)
 }
+\examples{
+# generate data
+dat <- generateMed(n = 100, a = 0.4, b = -0.8)
+cmfilter:::corMinusPartCor(dat$x, dat$M, dat$y)
+
+}
 \keyword{internal}

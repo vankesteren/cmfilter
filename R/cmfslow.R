@@ -1,5 +1,12 @@
 #' R-based Coordinate-wise Mediation Filter backend
-#'
+#' 
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' cmfilter:::cmfslow(dat$x, dat[,-c(1, 12)], dat$y, 
+#'                    decisionFunction = cmfilter:::prodCoef,
+#'                    nStarts = 50, nCores = 1, cutoff = 0.5, 
+#'                    maxIter = 25, stableLag = 5, p.value = 0.1)
+#'                   
 #' @keywords internal
 cmfslow <- function(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter, 
                     stableLag, ...) {
@@ -98,6 +105,13 @@ cmfslow <- function(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter,
 #' @param msel binary vector of mediator selections at step i
 #' @param medsamp which variables to consider
 #' @param ... parameters passed to decisionFunction
+#'
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' cmfilter:::cmfStep(dat$x, dat[,-c(1, 12)], dat$y, 
+#'                    decisionFunction = cmfilter:::prodCoef,
+#'                    msel = c(1, 1, 1, 0, 0, 0, 0, 0, 0, 0),
+#'                    medsamp = 1:10)
 #'
 #' @return binary vector of mediator selections at step i+1
 #'

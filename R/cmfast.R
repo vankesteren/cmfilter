@@ -3,6 +3,13 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats qnorm qt
 #' @useDynLib cmfilter, .registration=TRUE
+#' 
+#' @examples # generate some data
+#' dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+#' cmfilter:::cmfast(dat$x, dat[,-c(1, 12)], dat$y, nStarts = 100, nCores = 2, 
+#'                   cutoff = 0.5, maxIter = 25, stableLag = 5, p.value = 0.1, 
+#'                   pb = FALSE)
+#' 
 #' @keywords internal
 cmfast <- function(x, M, y, decisionFunction = "prodcoef", nStarts, nCores, 
                    cutoff, maxIter, stableLag, p.value, pb) {

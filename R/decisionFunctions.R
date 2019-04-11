@@ -4,6 +4,10 @@
 #' the difference in coefficients decision function (correlation - partial cor)
 #'
 #' @importFrom stats cor qnorm
+#' 
+#' @examples # generate data
+#' dat <- generateMed(n = 100, a = 0.4, b = -0.8)
+#' cmfilter:::corMinusPartCor(dat$x, dat$M, dat$y)
 #'
 #' @keywords internal
 corMinusPartCor <- function(x, m, y, p.value = 0.1) {
@@ -47,7 +51,11 @@ corMinusPartCor <- function(x, m, y, p.value = 0.1) {
 
 
 #' the product of coefficients decision function
-#'
+#' 
+#' @examples # generate data
+#' dat <- generateMed(n = 100, a = 0.4, b = -0.8)
+#' cmfilter:::prodCoef(dat$x, dat$M, dat$y)
+#' 
 #' @keywords internal
 prodCoef <- function(x, m, y, p.value = 0.1, dir = TRUE) {
   n <- length(x)

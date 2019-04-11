@@ -9,4 +9,10 @@ prodCoef(x, m, y, p.value = 0.1, dir = TRUE)
 \description{
 the product of coefficients decision function
 }
+\examples{
+# generate data
+dat <- generateMed(n = 100, a = 0.4, b = -0.8)
+cmfilter:::prodCoef(dat$x, dat$M, dat$y)
+
+}
 \keyword{internal}

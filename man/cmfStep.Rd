@@ -28,4 +28,13 @@ binary vector of mediator selections at step i+1
 \description{
 One step the cmf function (internal)
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+cmfilter:::cmfStep(dat$x, dat[,-c(1, 12)], dat$y, 
+                   decisionFunction = cmfilter:::prodCoef,
+                   msel = c(1, 1, 1, 0, 0, 0, 0, 0, 0, 0),
+                   medsamp = 1:10)
+
+}
 \keyword{internal}

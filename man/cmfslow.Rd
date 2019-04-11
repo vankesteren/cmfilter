@@ -10,4 +10,13 @@ cmfslow(x, M, y, decisionFunction, nStarts, nCores, cutoff, maxIter,
 \description{
 R-based Coordinate-wise Mediation Filter backend
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+cmfilter:::cmfslow(dat$x, dat[,-c(1, 12)], dat$y, 
+                   decisionFunction = cmfilter:::prodCoef,
+                   nStarts = 50, nCores = 1, cutoff = 0.5, 
+                   maxIter = 25, stableLag = 5, p.value = 0.1)
+                  
+}
 \keyword{internal}

@@ -10,4 +10,12 @@ cmfast(x, M, y, decisionFunction = "prodcoef", nStarts, nCores, cutoff,
 \description{
 Fast Coordinate-wise Mediation Filter backend
 }
+\examples{
+# generate some data
+dat <- generateMed(a = (1:10)/20, b = (1:10)/20)
+cmfilter:::cmfast(dat$x, dat[,-c(1, 12)], dat$y, nStarts = 100, nCores = 2, 
+                  cutoff = 0.5, maxIter = 25, stableLag = 5, p.value = 0.1, 
+                  pb = FALSE)
+
+}
 \keyword{internal}
