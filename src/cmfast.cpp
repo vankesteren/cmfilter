@@ -35,7 +35,7 @@
 
 // Generate random start
 arma::uvec generateStart(int n, int p) {
-  int nones = (sqrt(n) <= p / 2) ? sqrt(n) : p / 2;
+  int nones = std::floor((std::sqrt((double)n) <= p / 2.0) ? std::sqrt((double)n) : p / 2.0);
   arma::uvec one = arma::uvec(nones, arma::fill::ones);
   arma::uvec zer = arma::uvec(p - nones, arma::fill::zeros);
   return arma::shuffle(arma::join_cols(one, zer));
@@ -82,7 +82,7 @@ double sobel(arma::vec & x, arma::vec & m, arma::vec & y) {
   
   // return the z-score
   double stat = alpha * beta(1);
-  double se   = sqrt(alpha*alpha*var_b(1,1) + beta(1)*beta(1)*var_a);
+  double se   = std::sqrt(alpha*alpha*var_b(1,1) + beta(1)*beta(1)*var_a);
   return stat/se;
 }
 
@@ -94,7 +94,7 @@ double csteps(arma::vec & x, arma::vec & m, arma::vec & y) {
   double alpha    = dot(x,m) / cpx;
   arma::vec res_m = m - x*alpha;
   double var_a    = dot(res_m, res_m) / (n - 1) / cpx;
-  double ta       = fabs(alpha / sqrt(var_a));
+  double ta       = fabs(alpha / std::sqrt(var_a));
   
   // construct model matrix for b
   arma::mat mm    = arma::mat(n, 2);
@@ -106,7 +106,7 @@ double csteps(arma::vec & x, arma::vec & m, arma::vec & y) {
   arma::vec beta  = arma::solve(cpmm, mm.t() * y);
   arma::vec res_y = y - mm * beta;
   arma::mat var_b = dot(res_y, res_y) / (n-1) * cpmm.i();
-  double tb       = fabs(beta(1) / sqrt(var_b(1, 1)));
+  double tb       = fabs(beta(1) / std::sqrt(var_b(1, 1)));
   
   // return min(a, b)
   return (ta < tb) ? ta : tb;
@@ -179,7 +179,7 @@ arma::vec arma_cmf(arma::vec & x, arma::mat & M, arma::vec & y,
   // initialise information
   int n = M.n_rows;
   int p = M.n_cols;
-  int ss = ceil(sqrt(p));
+  int ss = std::ceil(std::sqrt((double)p));
   
   // initialise output matrix to fill with selections
   arma::umat result = arma::umat(M.n_cols, nStarts, arma::fill::zeros);
