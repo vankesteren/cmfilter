@@ -45,8 +45,7 @@ plot.cmf <- function(x, select, line = TRUE, labelSelected = TRUE,
   if (missing(select)) select <- seq_along(x$selectionRate)
   sp <- x$selectionRate[select]
   
-  co <- as.list(x$call)$cutoff
-  if (is.null(co)) co <- 0.5
+  co <- x$cutoff
   
   if (is.null(args$names.arg)) {
     if (length(select) < 20) {
@@ -111,11 +110,10 @@ summary.cmf <- function(object, ...) {
 
   rescall <- as.list(object$call)
   pars <- names(rescall)
-  ns <- rescall$nStarts
+  ns <- object$nStarts
   if (is.null(ns)) ns <- 1000
-  cat("number of starts:", ns, "\n")
-  co <- rescall$cutoff
-  if (is.null(co)) co <- 0.5
+  cat("number of starts:  ", ns, "\n")
+  co <- object$cutoff
   cat("cutoff probability:", co, "\n")
 
   apars <- pars[!pars %in% names(as.list(args(cmfilter::cmf)))]
@@ -175,17 +173,13 @@ update.cmf <- function(object, nStarts = 100, ...) {
   # evaluate the new call in the parent environment
   newres <- eval.parent(newcall)
   
-  if (is.null(object$call$nStarts)) {
+  if (is.null(object$nStarts)) {
     oldn <- 1e3
   } else {
-    oldn <- object$call$nStarts
+    oldn <- object$nStarts
   }
   
-  if (is.null(object$call$cutoff)) {
-    co <- .5
-  } else {
-    co <- object$call$cutoff
-  }
+  co <- object$cutoff
   
   object$selectionRate <-
     (object$selectionRate*oldn + newres$selectionRate*nStarts) / 
@@ -265,7 +259,7 @@ setCutoff <- function(object, cutoff = .5) {
   }
   if (!is.numeric(cutoff) || cutoff > 1 || cutoff <= 0)
     stop("Input cutoff between 0 and 1")
-  object$call$cutoff <- cutoff
+  object$cutoff <- cutoff
   object$selection <- object$selectionRate > cutoff
   object
 }
@@ -293,15 +287,15 @@ setCutoff <- function(object, cutoff = .5) {
 #' @export
 `+.cmf` <- function(x, y) {
   # Find the number of iterations of each of the objects
-  if (is.null(x$call$nStarts)) xn <- 1e3 else xn <- x$call$nStarts
-  if (is.null(y$call$nStarts)) yn <- 1e3 else yn <- y$call$nStarts
+  if (is.null(x$nStarts)) xn <- 1e3 else xn <- x$nStarts
+  if (is.null(y$nStarts)) yn <- 1e3 else yn <- y$nStarts
   
   # New selection rate is weighted average of selection rates.
   cmf_out <- x
-  cmf_out$call$nStarts  <- tot <- xn + yn
+  cmf_out$nStarts <- tot <- xn + yn
   cmf_out$selectionRate <- (xn * x$selectionRate + yn * y$selectionRate) / tot
   
   # Recalculate cutoff and return
-  if (is.null(x$call$cutoff)) co <- .5 else co <- x$call$cutoff
+  co <- x$cutoff
   setCutoff(cmf_out, co)
 }

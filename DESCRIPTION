@@ -1,7 +1,7 @@
 Package: cmfilter
 Type: Package
 Title: Coordinate-Wise Mediation Filter
-Version: 0.9.1
+Version: 0.9.2
 Date: 2019-04-09
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>

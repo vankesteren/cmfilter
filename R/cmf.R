@@ -110,5 +110,8 @@ cmf <- function(x, M, y, decisionFunction = "prodcoef",
     stop("Input valid decisionFunction.")
   }
 
+  # extract further info
+  res$nStarts <- nStarts
+  res$cutoff  <- cutoff
   return(structure(res, class = "cmf"))
 }
