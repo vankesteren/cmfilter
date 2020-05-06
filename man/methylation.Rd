@@ -4,7 +4,9 @@
 \name{methylation}
 \alias{methylation}
 \title{DNA Methylation, childhood trauma, and stress response}
-\format{A data frame with 85 rows and 1002 variables: a composite score on a childhood trauma questionnaire (x), a measure of increase in area under the curve of cortisol after stress task (y), and beta values of methylation at 1000 different locations in the genome.}
+\format{
+A data frame with 85 rows and 1002 variables: a composite score on a childhood trauma questionnaire (x), a measure of increase in area under the curve of cortisol after stress task (y), and beta values of methylation at 1000 different locations in the genome.
+}
 \usage{
 methylation
 }

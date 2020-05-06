@@ -4,8 +4,19 @@
 \alias{cmfast}
 \title{Fast Coordinate-wise Mediation Filter backend}
 \usage{
-cmfast(x, M, y, decisionFunction = "prodcoef", nStarts, nCores, cutoff,
-  maxIter, stableLag, p.value, pb)
+cmfast(
+  x,
+  M,
+  y,
+  decisionFunction = "prodcoef",
+  nStarts,
+  nCores,
+  cutoff,
+  maxIter,
+  stableLag,
+  p.value,
+  pb
+)
 }
 \description{
 Fast Coordinate-wise Mediation Filter backend

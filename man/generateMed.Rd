@@ -4,9 +4,19 @@
 \alias{generateMed}
 \title{Generate a high-dimensional mediation dataset}
 \usage{
-generateMed(n = 100L, a = 0.3, b = 0.3, r2y = 0.5, dir = 0,
-  Sigma, residual = FALSE, empirical = FALSE, scaley = FALSE,
-  forma = identity, formb = identity)
+generateMed(
+  n = 100L,
+  a = 0.3,
+  b = 0.3,
+  r2y = 0.5,
+  dir = 0,
+  Sigma,
+  residual = FALSE,
+  empirical = FALSE,
+  scaley = FALSE,
+  forma = identity,
+  formb = identity
+)
 }
 \arguments{
 \item{n}{Sample size}

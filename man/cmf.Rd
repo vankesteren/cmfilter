@@ -4,9 +4,19 @@
 \alias{cmf}
 \title{Coordinate-wise Mediation Filter}
 \usage{
-cmf(x, M, y, decisionFunction = "prodcoef", nStarts = 1000,
-  nCores = "auto", cutoff = 0.5, maxIter = 25, stableLag = 5,
-  pb = TRUE, ...)
+cmf(
+  x,
+  M,
+  y,
+  decisionFunction = "prodcoef",
+  nStarts = 1000,
+  nCores = "auto",
+  cutoff = 0.5,
+  maxIter = 25,
+  stableLag = 5,
+  pb = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{exogenous variable; numeric vector or data frame with x, y, and at

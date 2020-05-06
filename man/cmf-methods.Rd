@@ -8,8 +8,15 @@
 \alias{print.cmf}
 \title{Methods for cmf results lists}
 \usage{
-\method{plot}{cmf}(x, select, line = TRUE, labelSelected = TRUE,
-  defaultColour = "#00008b", highlightColour = "#e2bd36", ...)
+\method{plot}{cmf}(
+  x,
+  select,
+  line = TRUE,
+  labelSelected = TRUE,
+  defaultColour = "#00008b",
+  highlightColour = "#e2bd36",
+  ...
+)
 
 \method{screeplot}{cmf}(x, topn, ...)
 

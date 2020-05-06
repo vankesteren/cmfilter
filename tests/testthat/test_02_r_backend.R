@@ -48,7 +48,7 @@ test_that("Plot method works", {
 })
 test_that("Cutoff setting works", {
   res <- setCutoff(res, cutoff = 0.1)
-  expect_equal(res$call$cutoff, .1)
+  expect_equal(res$cutoff, .1)
 })
 test_that("Adding method works", {
   res1 <- res
@@ -108,7 +108,7 @@ test_that("Plot method works", {
 })
 test_that("Cutoff setting works", {
   res <- setCutoff(res, cutoff = 0.1)
-  expect_equal(res$call$cutoff, .1)
+  expect_equal(res$cutoff, .1)
 })
 test_that("Adding method works", {
   res1 <- res
@@ -181,7 +181,7 @@ test_that("Plot method works", {
 })
 test_that("Cutoff setting works", {
   res <- setCutoff(res, cutoff = 0.1)
-  expect_equal(res$call$cutoff, .1)
+  expect_equal(res$cutoff, .1)
 })
 test_that("Adding method works", {
   res1 <- res

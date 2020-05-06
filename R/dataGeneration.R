@@ -39,7 +39,7 @@ generateMed <- function(n = 1e2L,
                         forma = identity, formb = identity) {
 
   # Input checking
-  if (class(a) != "dsparseVector") {
+  if (!inherits(a, "dsparseVector")) {
     # user knows what they're doing if sparse vectors, skip input check
     if (r2y > 1 || r2y <= 0) {
       stop("Arg r2y should be in range (0,1]")
@@ -89,7 +89,7 @@ generateMed <- function(n = 1e2L,
     }
 
     # Marginal covariance matrix of x & M
-    if (class(Sigma) == "dgCMatrix") {
+    if (inherits(Sigma, "dgCMatrix")) {
       # use sparse matrices. empirical unavailable
       if (empirical) stop("Empirical not available with sparse matrices")
 
@@ -131,8 +131,8 @@ generateMed <- function(n = 1e2L,
     M <- forma(x %*% t(a)) + resM
     y <- formb(M %*% b) + formb(dir * x) + rnorm(n, sd = sqrt(resy))
     if (scaley) y <- scale(y)
-    if (class(M) == "dgeMatrix") M <- matrix(M, n)
-    if (class(y) == "dgeMatrix") y <- as.numeric(y)
+    if (inherits(M, "dgeMatrix")) M <- matrix(M, n)
+    if (inherits(y, "dgeMatrix")) y <- as.numeric(y)
     return(data.frame(x = x, M = M, y = y))
   } else {
     if (missing(Sigma)) stop("Empirical not allowed without Sigma")
