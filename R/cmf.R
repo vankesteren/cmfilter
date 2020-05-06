@@ -16,7 +16,8 @@
 #' indicating the built-in decision function to use (see details)
 #'
 #' @param nStarts how many times to start the algorithm
-#' @param nCores how many threads (cores) to use for parallel processing
+#' @param nCores how many threads (cores) to use for parallel processing 
+#' (default 2)
 #' 
 #' @param cutoff a cutoff value for selection: variables are selected if they
 #' display a selection rate higher than this value. Only relevant when multiple
@@ -50,11 +51,9 @@
 #'
 #' @export
 cmf <- function(x, M, y, decisionFunction = "prodcoef",
-                nStarts = 1e3, nCores = "auto", 
+                nStarts = 1e3, nCores = 2, 
                 cutoff = 0.5, maxIter = 25, stableLag = 5,
                 pb = TRUE, ...) {
-
-  if (nCores == "auto")  nCores <- parallel::detectCores()
 
   if (is.data.frame(x) && missing(M) && missing(y)) {
     d <- x

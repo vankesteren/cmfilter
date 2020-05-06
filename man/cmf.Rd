@@ -10,7 +10,7 @@ cmf(
   y,
   decisionFunction = "prodcoef",
   nStarts = 1000,
-  nCores = "auto",
+  nCores = 2,
   cutoff = 0.5,
   maxIter = 25,
   stableLag = 5,
@@ -32,7 +32,8 @@ indicating the built-in decision function to use (see details)}
 
 \item{nStarts}{how many times to start the algorithm}
 
-\item{nCores}{how many threads (cores) to use for parallel processing}
+\item{nCores}{how many threads (cores) to use for parallel processing 
+(default 2)}
 
 \item{cutoff}{a cutoff value for selection: variables are selected if they
 display a selection rate higher than this value. Only relevant when multiple
