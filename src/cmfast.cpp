@@ -140,8 +140,8 @@ arma::uvec cmfastep(arma::vec & x, arma::mat & M, arma::vec & y,
       
       arma::mat Mx   = getcols(M, fcopy);          // model matrix
       arma::mat MtM  = Mx.t() * Mx;                // crossprod
-      arma::mat icp  = arma::inv_sympd(MtM);       // inverse crossprod matrix
-      arma::mat H    = Mx * icp * Mx.t();          // hat matrix
+      //arma::mat icp  = arma::inv_sympd(MtM);        // inverse crossprod matrix
+      arma::mat H    = Mx * arma::solve(MtM, Mx.t(), arma::solve_opts::likely_sympd); // hat matrix
       r_x            = x - H * x;                  // residual of x
       r_y            = y - H * y;                  // residual of y
     }
