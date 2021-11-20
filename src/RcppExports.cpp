@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // arma_cmf
 arma::vec arma_cmf(arma::vec& x, arma::mat& M, arma::vec& y, int& maxIter, int& stableLag, double& critval, int& decfun, int& nCores, int& nStarts, bool& pb);
 RcppExport SEXP _cmfilter_arma_cmf(SEXP xSEXP, SEXP MSEXP, SEXP ySEXP, SEXP maxIterSEXP, SEXP stableLagSEXP, SEXP critvalSEXP, SEXP decfunSEXP, SEXP nCoresSEXP, SEXP nStartsSEXP, SEXP pbSEXP) {
