@@ -94,7 +94,16 @@ test_that("Adding method works", {
   res3 <- res1 + res2
   expect_equal(res3$selectionRate, (res1$selectionRate + res2$selectionRate)/2)
 })
-
+test_that("CMF works with collinearity", {
+  o <- capture.output(res <<- cmf(
+    cbind(d, d[,3]*0.5), 
+    nStarts = 400,
+    decisionFunction = "prodcoef",
+    nCores = 2,
+    pb = FALSE
+  ), type = "message")
+  expect(inherits(res, "cmf"), "Result is not of class CMF")
+})
 
 context("CPP backend Causal Steps")
 test_that("Single-core csteps cmf works", {
@@ -151,4 +160,14 @@ test_that("Adding method works", {
   res2 <- res
   res3 <- res1 + res2
   expect_equal(res3$selectionRate, (res1$selectionRate + res2$selectionRate)/2)
+})
+test_that("CMF works with collinearity", {
+  o <- capture.output(res <<- cmf(
+    cbind(d, d[,3]*0.5), 
+    nStarts = 400,
+    decisionFunction = "causalsteps",
+    nCores = 2,
+    pb = FALSE
+  ), type = "message")
+  expect(inherits(res, "cmf"), "Result is not of class CMF")
 })
