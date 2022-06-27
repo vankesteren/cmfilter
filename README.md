@@ -16,12 +16,18 @@ An `R` package for simultaneous discovery of multiple mediators in an _x â†’ M â
 Keywords: `high-dimensional data`, `feature selection`, `structural equation modeling`, `mediation analysis`
 
 ## Installation
-The package is not yet available on `CRAN`. To install the package directly from this repository, install the `devtools` package, make sure you have [`R Build Tools` (Windows)](https://cran.r-project.org/bin/windows/Rtools/) installed, and then run the following command:
-```r
-devtools::install_github("vankesteren/cmfilter")
-```
+The package can be installed from the `r-universe`:
 
-If you have only installed the toolchain for your current architecture (32-bit or 64-bit only), run `options(devtools.install.args = "--no-multiarch")` before installing.
+```r
+# Enable repository from vankesteren
+options(repos = c(
+  vankesteren = "https://vankesteren.r-universe.dev",
+  CRAN = "https://cloud.r-project.org"
+))
+
+# Download and install cmfilter in R
+install.packages("cmfilter")
+```
 
 
 To install the development version of `cmfilter`, run
@@ -31,4 +37,10 @@ devtools::install_github("vankesteren/cmfilter@devel")
 ```
 
 ## Usage
-The built-in documentation (run `help(cmf)`) gives information on how to use this package. More extensive documentation is under development.
+The built-in documentation (run `help(cmf)`) gives information on how to use this package.
+
+## Citation
+
+```
+van Kesteren, E. J., & Oberski, D. L. (2019). Exploratory mediation analysis with many potential mediators. Structural Equation Modeling: A Multidisciplinary Journal, 26(5), 710-723.
+```
