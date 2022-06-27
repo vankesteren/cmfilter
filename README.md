@@ -2,8 +2,8 @@
   <img src="cmfilter.png" width="300px"></img>
   <br/>
   <span>
-    <a href="https://CRAN.R-project.org/package=cmfilter"><img src="http://www.r-pkg.org/badges/version/cmfilter"></img></a>
-    <a href="https://travis-ci.org/vankesteren/cmfilter"><img src="https://travis-ci.org/vankesteren/cmfilter.svg?branch=master"></img></a>
+    <a href="https://vankesteren.r-universe.dev"><img src="https://vankesteren.r-universe.dev/badges/cmfilter"></img></a>
+    <a href="https://github.com/vankesteren/cmfilter/actions/workflows/r.yml"><img src="https://github.com/vankesteren/cmfilter/actions/workflows/r.yml/badge.svg"></img></a>
     <a href="https://ci.appveyor.com/project/vankesteren/cmfilter"><img src="https://ci.appveyor.com/api/projects/status/f0hbgmqlgkqhdstj?svg=true"></img></a>
   </span>
   <h5 align="center">Coordinate-wise Mediation Filter</h5>
