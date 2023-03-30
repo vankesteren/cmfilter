@@ -5,3 +5,4 @@
 ^appveyor\.yml$
 ^cmfilter\.png$
 ^README.md$
+^.github

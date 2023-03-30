@@ -1,8 +1,8 @@
 Package: cmfilter
 Type: Package
 Title: Coordinate-Wise Mediation Filter
-Version: 0.9.4
-Date: 2021-11-20
+Version: 0.9.5
+Date: 2023-03-30
 Author: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Maintainer: Erik-Jan van Kesteren <e.vankesteren1@uu.nl>
 Description: Functions to discover, plot, and select multiple mediators 
@@ -16,7 +16,6 @@ RoxygenNote: 7.1.1
 Depends: R (>= 2.10)
 Imports: Matrix,
     sparseMVN,
-    expm,
     pbapply,
     MASS,
     parallel,

@@ -155,5 +155,5 @@ generateMed <- function(n = 1e2L,
 #' @keywords internal
 empiricalTransform <- function(X, Sigma) {
   # Force covariance matrix Sigma on X as per Mair, Satorra et al.
-  return(X %*% expm::sqrtm(solve(cov(X))) %*% expm::sqrtm(Sigma))
+  return(X %*% backsolve(chol(cov(X)), chol(Sigma)))
 }
